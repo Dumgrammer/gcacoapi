@@ -39,12 +39,13 @@ class Login {
             exit;
         }
 
-        $email = $data->email;
+        $email = $data->admin_email;
         $password = $data->password;
 
-        $tableName = 'gcfaculty';
+        $tableName = 'admin';
 
-        $sqlQuery = "SELECT fac_id, fac_fname, fac_lname, password FROM " . $tableName . " WHERE email = :email";
+        $sqlQuery = "SELECT admin_id, faculty_lastname, faculty_firstname, password FROM $tableName WHERE admin_email = :email";
+
         $stmt = $this->conn->prepare($sqlQuery);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -52,9 +53,9 @@ class Login {
 
         if ($num > 0) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $id = $row['fac_id'];
-            $firstname = $row['fac_fname'];
-            $lastname = $row['fac_lname'];
+            $id = $row['admin_id'];
+            $firstname = $row['faculty_firstname'];
+            $lastname = $row['faculty_lastname'];
             $storedPassword = $row['password'];
 
             if (password_verify($password, $storedPassword)) {

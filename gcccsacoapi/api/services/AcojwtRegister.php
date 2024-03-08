@@ -19,28 +19,31 @@ class RegisterUser {
 
         $data = json_decode(file_get_contents("php://input"));
 
-        $firstName = $data->fac_fname;
-        $lastName = $data->fac_lname;
-        $email = $data->email;
+        $email = $data->admin_email;
         $password = $data->password;
+        $lastName = $data->faculty_lastname;
+        $firstName = $data->faculty_firstname;
 
-        $table_name = 'gcfaculty';
+        $table_name = 'admin';
 
         $query = "INSERT INTO " . $table_name . "
-                    SET fac_fname = :firstname,
-                        fac_lname = :lastname,
-                        email = :email,
-                        password = :password";
+                    SET admin_email = :email,
+                        password = :password,
+                        faculty_lastname = :lastname,
+                        faculty_firstname = :firstname";
 
         $stmt = $this->conn->prepare($query);
-
-        $stmt->bindParam(':firstname', $firstName);
-        $stmt->bindParam(':lastname', $lastName);
+        
         $stmt->bindParam(':email', $email);
 
         $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
         $stmt->bindParam(':password', $password_hash);
+        
+        $stmt->bindParam(':firstname', $firstName);
+        $stmt->bindParam(':lastname', $lastName);
+
+
 
         if ($stmt->execute()) {
             http_response_code(200);

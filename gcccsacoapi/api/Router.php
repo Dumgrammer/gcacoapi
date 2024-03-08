@@ -6,6 +6,7 @@ require_once(__DIR__ . './config/AcoDatabase.php');
 require_once(__DIR__ . './services/AcojwtLogin.php');
 require_once(__DIR__ . './services/AcojwtRegister.php');
 require_once(__DIR__ . './services/AcoMailing.php');
+require_once(__DIR__ . './services/AcoFormHandler.php');
 
 $conn = new DatabaseAccess();
 $pdo = $conn->connect();
@@ -13,6 +14,7 @@ $pdo = $conn->connect();
 $register = new RegisterUser($pdo);
 $login = new Login($pdo);
 $mail = new Mailing();
+$forms = new FormHandler($pdo);
 
     if(isset($_REQUEST['request'])){
         
@@ -42,9 +44,16 @@ $mail = new Mailing();
                             echo json_encode($register->registerUser($data));
 
                         break;
+
+                case 'addrecords' :
+                        
+                        echo json_encode($forms->submitFormData($data));
+
+                        break;
+                        
                 case 'mail':
                     
-                    echo json_encode($mail->sendEmail());
+                    echo json_encode($mail->sendEmail($data));
                     break;
                 
 
