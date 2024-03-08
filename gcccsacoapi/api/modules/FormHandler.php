@@ -47,18 +47,39 @@ class FormHandler
         }
     }
 
-    public function updateFormData()
-    {
-       
+    public function updateFormData($formData)
+{
+    $tableName = 'table'; 
+
+    $attrs = array_keys((array) $formData);
+    $updateStatements = array_map(function ($attr) {
+        return "$attr = ?"; 
+    }, 
+    $attrs);
+
+    $sql = "UPDATE $tableName SET " . implode(',', $updateStatements) . " WHERE id = ?";
+
+    try {
+        $stmt = $this->pdo->prepare($sql);
+
+        $values = array_values((array) $formData);
+        $values[] = $formData->id;
+        $stmt->execute($values);
+
+        return $this->sendResponse("Form data updated", 200);
+    } catch (\PDOException $e) {
+        $errmsg = $e->getMessage();
+        return $this->sendErrorResponse("Failed to update: $errmsg", 400);
     }
+}
 
     public function deleteFormData()
     {
+        $tableName = 'formtable';
+        $sql = "DELETE FROM formtable WHERE id = ?";
         try {
-            $tableName = 'formtable';
-            $sql = "DELETE FROM formtable WHERE id = ?";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([]);
+            $stmt->execute([$id]);
 
             return $this->sendResponse("Form Deleted", 200);
         } catch (\PDOException $e) {
