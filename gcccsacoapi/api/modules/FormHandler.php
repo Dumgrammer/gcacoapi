@@ -69,7 +69,7 @@ class FormHandler
         return $this->sendResponse("Form data updated", 200);
     } catch (\PDOException $e) {
         $errmsg = $e->getMessage();
-        return $this->sendErrorResponse("Failed to update: $errmsg", 400);
+        return $this->sendErrorResponse("Failed to update" . $errmsg, 400);
     }
 }
 
