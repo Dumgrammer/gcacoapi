@@ -36,6 +36,14 @@ if ($operation === 'submit_form') {
         $response = $formHandler->getFormData($data);
     
 }
+else if 
+    ($operation === 'update_form'){
+        $response = $formHandler->updateFormData($data);
+    }
+else if 
+    ($operation === 'delete_form'){
+        $response = $formHandler->deleteFormData($data);
+    }
  
  else {
     http_response_code(400);

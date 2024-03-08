@@ -47,6 +47,27 @@ class FormHandler
         }
     }
 
+    public function updateFormData()
+    {
+       
+    }
+
+    public function deleteFormData()
+    {
+        try {
+            $tableName = 'formtable';
+            $sql = "DELETE FROM formtable WHERE id = ?";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([]);
+
+            return $this->sendResponse("Form Deleted", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to delete" . $errmsg, 400);
+        }
+    }
+
+
 
 
     private function sendResponse($data, $statusCode)
