@@ -11,14 +11,13 @@ class FormHandler extends GlobalUtil
         $this->pdo = $pdo;
     }
 
-    public function submitFormData($formData)
-    {
+    public function submitFormData($formData){
         $tableName = 'alumni'; 
 
             $attrs = array_keys((array) $formData);
             $quest = array_fill(0, count($attrs), '?');
 
-            $sql = "INSERT INTO formtable (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
+            $sql = "INSERT INTO $tableName (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
         try {
             $stmt = $this->pdo->prepare($sql);
 
@@ -35,7 +34,7 @@ class FormHandler extends GlobalUtil
     public function getFormData()
     {
         try {
-            $tableName = 'table'; 
+            $tableName = 'alumni'; 
 
             $sql = "SELECT * FROM formtable";
             $stmt = $this->pdo->query($sql);
@@ -49,5 +48,45 @@ class FormHandler extends GlobalUtil
         }
     }
 
+    public function updateFormData($id, $formData){
+        $tableName = 'alumni'; 
+    
+        $attrs = array_keys((array) $formData);
+        $updateStatements = array_map(function ($attr) {
+            return "$attr = ?"; 
+        }, $attrs);
+    
+        $sql = "UPDATE $tableName SET " . implode(', ', $updateStatements) . " WHERE alumni_id = ?";
+    
+        try {
+            $stmt = $this->pdo->prepare($sql);
+    
+            $values = array_values((array) $formData);
+            $values[] = (int) $id;
+    
+            $stmt->execute($values);
+    
+            return $this->sendResponse("Form data updated", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to update: " . $errmsg, 400);
+        }
+    }
+    
+
+    public function deleteFormData($id)
+    {
+        $tableName = 'alumni';
+        $sql = "DELETE FROM $tableName WHERE alumni_id = ?";
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$id]);
+
+            return $this->sendResponse("Form Deleted", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to delete" . $errmsg, 400);
+        }
+    }
 }
 ?>

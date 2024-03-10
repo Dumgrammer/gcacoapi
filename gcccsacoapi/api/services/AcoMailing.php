@@ -10,7 +10,7 @@ require_once(__DIR__ . '/../../PHPMailer/src/SMTP.php');
 class Mailing {
     public function sendEmail($name, $email, $subject, $message) {
         
-        header("Access-Control-Allow-Origin: http://localhost:4200");
+        header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Methods: POST");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
         header("Content-Type: application/json; charset=UTF-8");
@@ -21,7 +21,7 @@ class Mailing {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'bastianlacap55@gmail.com';
-            $mail->Password = 'zfvd bkhb kfet vttj';
+            $mail->Password = 'kajw svja xeug bwzk';
             $mail->Port = 465;
             $mail->SMTPSecure = 'ssl';
             $mail->isHTML(true);

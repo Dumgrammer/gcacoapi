@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 use Firebase\JWT\JWT;
 
+
+
 require_once(__DIR__ . '/../config/AcoDatabase.php');
 require_once(__DIR__ . '/../config/secretKey.php');
 require_once(__DIR__ . '/../../vendor/autoload.php');
+
 
 class Login {
     private $conn;
@@ -21,11 +24,6 @@ class Login {
     }
 
     public function loginUser() {
-        header("Access-Control-Allow-Origin: *");
-        header("Access-Control-Max-Age: 3600");
-        header("Access-Control-Allow-Methods: POST");
-        header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
         $email = '';
         $password = '';
@@ -112,11 +110,31 @@ class Login {
             )
         );
 
-        return JWT::encode($token, $secretKey, 'HS512');
+        $jwt = JWT::encode($token, $secretKey, 'HS512');
+
+        setcookie("jwt", $jwt, [
+
+        'expires' => $expiredAt,
+        'path' =>  "/",
+        'domain' => "",
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'None'
+    ]);
+        
+    $response = array(
+        "message" => "Successfully Login!",
+        "jwt" => $jwt,
+        "email" => $email,
+        "expireAt" => $this->getExpirationTime(),
+        "redirect" => "/statistics"
+    );
+    http_response_code(200);
+    echo json_encode($response);
     }
 
     private function getExpirationTime() {
-        return time() + 60; // Adjust this as needed
+        return time() + 60;
     }
 }
 ?>
