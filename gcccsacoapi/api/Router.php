@@ -71,6 +71,23 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
         }
         break;
+        case 'GET':
+            $data = json_decode(file_get_contents("php://input"));
+            switch ($request[0]) {
+                case  'alumni':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getFormData($request[1]));
+                    } else {
+                        echo json_encode($forms->getFormData());
+                    }
+                    break;
+                default:
+                    echo "Method not available";
+                    http_response_code(404);
+                    break;
+            }
+            break;  // <-- This was missing
+        
     default:
         echo "Method not available";
         http_response_code(404);

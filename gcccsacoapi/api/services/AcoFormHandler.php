@@ -11,32 +11,40 @@ class FormHandler extends GlobalUtil
         $this->pdo = $pdo;
     }
 
-    public function submitFormData($formData){
-        $tableName = 'alumni'; 
-
-            $attrs = array_keys((array) $formData);
-            $quest = array_fill(0, count($attrs), '?');
-
-            $sql = "INSERT INTO $tableName (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
+    public function submitFormData($formData)
+    {
+        $tableName = 'alumni';
+    
+        // Convert object to array
+        $formDataArray = (array) $formData;
+    
+        // Include only scalar values in $attrs
+        $attrs = array_keys(array_filter($formDataArray, 'is_scalar'));
+        $quest = array_fill(0, count($attrs), '?');
+    
+        $sql = "INSERT INTO $tableName (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
+    
         try {
             $stmt = $this->pdo->prepare($sql);
-
-            $values = array_values((array) $formData);
+    
+            $values = array_values(array_filter($formDataArray, 'is_scalar'));
             $stmt->execute($values);
-
+    
             return $this->sendResponse("Form data added", 201);
         } catch (\PDOException $e) {
             $errmsg = $e->getMessage();
-            return $this->sendErrorResponse($errmsg, "Failed to add" , 400);
+            return $this->sendErrorResponse($errmsg, "Failed to add", 400);
         }
     }
+    
+    
     
     public function getFormData()
     {
         try {
             $tableName = 'alumni'; 
 
-            $sql = "SELECT * FROM formtable";
+            $sql = "SELECT * FROM $tableName";
             $stmt = $this->pdo->query($sql);
 
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
