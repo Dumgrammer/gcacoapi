@@ -28,7 +28,7 @@ $pdo = $conn->connect();
 
 $register = new RegisterUser($pdo);
 $login = new Login($pdo);
-$mail = new Mailing();
+$mail = new Mail($pdo);
 $forms = new FormHandler($pdo);
 
 if (isset($_REQUEST['request'])) {
