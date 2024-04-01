@@ -14,6 +14,7 @@ $dotenv->load();
 
 class Mail{
     function sendEmail($data){
+        try {
         $mail = new PHPMailer(true);
         $mail->isSMTP();
         $mail->Host = $_ENV['SMTP_HOST'];
@@ -25,20 +26,21 @@ class Mail{
         $mail->isHTML(true);
         $mail->setFrom($_ENV['SMTP_USERNAME']);
 
-$recipient = 'recipient@example.com';
-$subject = 'Your email subject';
-$message = 'Your email message';
+            $emails = explode(',', $data->email);
 
-try {
-    $mail->addAddress($recipient);
-    $mail->Subject = $subject;
-    $mail->Body = $message;
+            foreach($emails as $email){
+                $mail->addAddress(trim($email));
+            }
+    
+    $mail->Subject = $data->subject;
+    $mail->Body = $data->message;
     $mail->send();
 
-    echo "Email sent successfully.";
-} catch (Exception $e) {
-    echo "Error sending email: " . $e->getMessage();
-}
+    http_response_code(200);
+} catch(Exception $e){
+    http_response_code(500);
+    //echo json_encode(array("error" => "Error sending email: " . $e->getMessage()));
         }
     }
+}
 ?>
