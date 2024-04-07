@@ -12,5 +12,9 @@ return array(
     'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src/PhpOption'),
     'GrahamCampbell\\ResultType\\' => array($vendorDir . '/graham-campbell/result-type/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
+<<<<<<< Updated upstream
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
+=======
+    'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
+>>>>>>> Stashed changes
 );
