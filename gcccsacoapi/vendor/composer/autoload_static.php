@@ -7,9 +7,13 @@ namespace Composer\Autoload;
 class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
 {
     public static $files = array (
+<<<<<<< Updated upstream
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
+=======
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+>>>>>>> Stashed changes
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -30,6 +34,7 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+            'FastRoute\\' => 10,
         ),
         'D' => 
         array (
@@ -62,9 +67,15 @@ class ComposerStaticInit20fad51902f91e7fd3039e016a6556b5
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
+<<<<<<< Updated upstream
         'Dotenv\\' => 
         array (
             0 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
+=======
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+>>>>>>> Stashed changes
         ),
     );
 
