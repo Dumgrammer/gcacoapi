@@ -13,6 +13,7 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../..');
 $dotenv->load();
 
 class Mail{
+
     function sendEmail($data){
         try {
         $mail = new PHPMailer(true);
@@ -37,10 +38,16 @@ class Mail{
     $mail->send();
 
     http_response_code(200);
-} catch(Exception $e){
+    }catch(Exception $e){
     http_response_code(500);
-    //echo json_encode(array("error" => "Error sending email: " . $e->getMessage()));
+    echo json_encode(array("error" => "Error sending email: " . $e->getMessage()));
+    exit();
         }
+    }
+
+    function scheduledSend($data){
+        sleep(604800);
+        $this->sendEmail($data);
     }
 }
 ?>

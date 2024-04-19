@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '32805e6eb0d8b7911327fc5ee4b3dce5f8869f4d',
+        'reference' => '678cfd96efbb26eca07f95d9638664da248e3f3d',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '32805e6eb0d8b7911327fc5ee4b3dce5f8869f4d',
+            'reference' => '678cfd96efbb26eca07f95d9638664da248e3f3d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -28,13 +28,21 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-<<<<<<< Updated upstream
         'graham-campbell/result-type' => array(
             'pretty_version' => 'v1.1.2',
             'version' => '1.1.2.0',
             'reference' => 'fbd48bce38f73f8a4ec8583362e732e4095e5862',
             'type' => 'library',
             'install_path' => __DIR__ . '/../graham-campbell/result-type',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'nikic/fast-route' => array(
+            'pretty_version' => 'v1.3.0',
+            'version' => '1.3.0.0',
+            'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nikic/fast-route',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -80,14 +88,6 @@
             'reference' => '2cf9fb6054c2bb1d59d1f3817706ecdb9d2934c4',
             'type' => 'library',
             'install_path' => __DIR__ . '/../vlucas/phpdotenv',
-=======
-        'nikic/fast-route' => array(
-            'pretty_version' => 'v1.3.0',
-            'version' => '1.3.0.0',
-            'reference' => '181d480e08d9476e61381e04a71b34dc0432e812',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../nikic/fast-route',
->>>>>>> Stashed changes
             'aliases' => array(),
             'dev_requirement' => false,
         ),

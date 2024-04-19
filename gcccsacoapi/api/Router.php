@@ -1,10 +1,10 @@
 <?php
 
-require_once('./config/AcoDatabase.php');
-require_once( './services/AcojwtLogin.php');
-require_once('./services/AcojwtRegister.php');
-require_once('./services/AcoMailing.php');
-require_once( './services/AcoFormHandler.php');
+require_once(__DIR__.'./config/AcoDatabase.php');
+require_once(__DIR__. './services/AcojwtLogin.php');
+require_once(__DIR__.'./services/AcojwtRegister.php');
+require_once(__DIR__.'./services/AcoMailing.php');
+require_once(__DIR__.'./services/AcoFormHandler.php');
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -64,6 +64,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'mail':
                 echo json_encode($mail->sendEmail($data));
+                break;
+            case 'schedule':
+                echo json_encode($mail->scheduledSend($data));
                 break;
             default:
                 echo "This is forbidden";
