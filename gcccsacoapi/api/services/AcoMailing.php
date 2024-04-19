@@ -27,7 +27,8 @@ class Mail{
         $mail->isHTML(true);
         $mail->setFrom($_ENV['SMTP_USERNAME']);
 
-            $emails = explode(',', $data->email);
+        $emailString = is_array($data->email) ? implode(',', $data->email) : $data->email;
+        $emails = explode(',', $emailString);
 
             foreach($emails as $email){
                 $mail->addAddress(trim($email));
