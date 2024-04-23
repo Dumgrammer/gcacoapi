@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     exit(0);
 }
+
 $conn = new DatabaseAccess();
 $pdo = $conn->connect();
 

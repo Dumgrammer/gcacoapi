@@ -46,9 +46,24 @@ class Mail{
         }
     }
 
-    function scheduledSend($data){
-        sleep(604800);
+    function scheduledSend($data) {
+
+        $nextSunday = strtotime('next Sunday 8:00:00');
+    
+        $currentDayOfWeek = date('N');
+        $currentTime = time();
+    
+
+        if ($currentTime >= $nextSunday) {
+            $nextSunday = strtotime('next Sunday 8:00:00', $currentTime);
+        }
+
+        $timeDifference = $nextSunday - $currentTime;
+
+        sleep($timeDifference);
+
         $this->sendEmail($data);
     }
+    
 }
 ?>
