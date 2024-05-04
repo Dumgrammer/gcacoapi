@@ -85,6 +85,27 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         echo json_encode($forms->getFormData());
                     }
                     break;
+                    case  'alumni':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getFormData($request[1]));
+                    } else {
+                        echo json_encode($forms->getFormData());
+                    }
+                    break;
+                    case  'contact':
+                        if (count($request) > 1) {
+                            echo json_encode($forms->getFormContact($request[1]));
+                        } else {
+                            echo json_encode($forms->getFormContact());
+                        }
+                        break;
+                        case  'education':
+                            if (count($request) > 1) {
+                                echo json_encode($forms->getFormCredentials($request[1]));
+                            } else {
+                                echo json_encode($forms->getFormCredentials());
+                            }
+                            break;
                 default:
                     echo "Method not available";
                     http_response_code(404);

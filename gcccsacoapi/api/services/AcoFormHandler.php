@@ -11,29 +11,51 @@ class FormHandler extends GlobalUtil
         $this->pdo = $pdo;
     }
 
-    public function submitFormData($formData)
-    {
-        $tableName = 'gc_alumni';
+    public function submitFormData($formData){   
+
+        $tableAttributeMapping = [
+            'gc_alumni' => ['alumni_lastname','alumni_firstname','alumni_middlename','alumni_birthday','alumni_age'],
+            'gc_alumni_contact' => ['alumni_email','alumni_number','alumni_address'],
+            'gc_alumni_education' => ['year_graduated','alumni_program','education_upgrade'],
+            'gc_alumni_family' => ['alumni_marital_status','alumni_number_of_children','alumni_spousename','alumni_race','alumni_religion'],
+            'gc_history' => ['employment_status','working_in_abroad','working_in_industry','years_of_experience','current_job']
+        ];
     
-        // Convert object to array
         $formDataArray = (array) $formData;
     
-        // Include only scalar values in $attrs
-        $attrs = array_keys(array_filter($formDataArray, 'is_scalar'));
-        $quest = array_fill(0, count($attrs), '?');
+        $inserted = false;
     
-        $sql = "INSERT INTO $tableName (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
+        foreach ($tableAttributeMapping as $table => $attributes) {
+            // Taga check ng table kung meron
+            $matchedAttributes = array_intersect($attributes, array_keys($formDataArray));
+            if (!empty($matchedAttributes)) {
+                try {
+                    // Prepare SQL query
+                    $sql = "INSERT INTO $table (" . implode(',', $matchedAttributes) . ") VALUES (" . rtrim(str_repeat('?,', count($matchedAttributes)), ',') . ")";
+                    $stmt = $this->pdo->prepare($sql);
     
-        try {
-            $stmt = $this->pdo->prepare($sql);
+                    // taga get ng values na paglalagyan ng data
+                    $values = array_intersect_key($formDataArray, array_flip($matchedAttributes));
     
-            $values = array_values(array_filter($formDataArray, 'is_scalar'));
-            $stmt->execute($values);
+                    $stmt->execute(array_values($values));
     
-            return $this->sendResponse("Form data added", 201);
-        } catch (\PDOException $e) {
-            $errmsg = $e->getMessage();
-            return $this->sendErrorResponse($errmsg, "Failed to add", 400);
+                    $inserted = true;
+    
+                    // Output success message
+                    echo "Data added successfully to $table!";
+                } catch (\PDOException $e) {
+                    // Handle error: Log or display the error message
+                    error_log("Failed to insert data into $table: " . $e->getMessage());
+                }
+            }
+        }
+    
+        if ($inserted) {
+            // Return success response
+            return $this->sendResponse("Data added successfully!", 201);
+        } else {
+            // Return error response if no data was inserted
+            return $this->sendErrorResponse("No matching table found for provided attributes", "Failed to add", 400);
         }
     }
     
@@ -43,6 +65,39 @@ class FormHandler extends GlobalUtil
     {
         try {
             $tableName = 'gc_alumni'; 
+
+            $sql = "SELECT * FROM $tableName";
+            $stmt = $this->pdo->query($sql);
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+
+    public function getFormContact()
+    {
+        try {
+            $tableName = 'gc_alumni_contact'; 
+
+            $sql = "SELECT * FROM $tableName";
+            $stmt = $this->pdo->query($sql);
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+    public function getFormCredentials()
+    {
+        try {
+            $tableName = 'gc_alumni_education'; 
 
             $sql = "SELECT * FROM $tableName";
             $stmt = $this->pdo->query($sql);
