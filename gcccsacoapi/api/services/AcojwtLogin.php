@@ -40,7 +40,7 @@ class Login {
         $email = $data->admin_email;
         $password = $data->password;
 
-        $tableName = 'admin';
+        $tableName = 'gc_admin';
 
         $sqlQuery = "SELECT admin_id, faculty_lastname, faculty_firstname, password FROM $tableName WHERE admin_email = :email";
 

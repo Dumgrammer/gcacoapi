@@ -26,7 +26,7 @@ class RegisterUser {
         $lastName = $data->faculty_lastname;
         $firstName = $data->faculty_firstname;
 
-        $table_name = 'admin';
+        $table_name = 'gc_admin';
 
         $query = "INSERT INTO " . $table_name . "
                     SET admin_email = :email,

@@ -13,7 +13,7 @@ class FormHandler extends GlobalUtil
 
     public function submitFormData($formData)
     {
-        $tableName = 'alumni';
+        $tableName = 'gc_alumni';
     
         // Convert object to array
         $formDataArray = (array) $formData;
@@ -42,7 +42,7 @@ class FormHandler extends GlobalUtil
     public function getFormData()
     {
         try {
-            $tableName = 'alumni'; 
+            $tableName = 'gc_alumni'; 
 
             $sql = "SELECT * FROM $tableName";
             $stmt = $this->pdo->query($sql);
@@ -57,7 +57,7 @@ class FormHandler extends GlobalUtil
     }
 
     public function updateFormData($id, $formData){
-        $tableName = 'alumni'; 
+        $tableName = 'gc_alumni'; 
     
         $attrs = array_keys((array) $formData);
         $updateStatements = array_map(function ($attr) {
@@ -84,7 +84,7 @@ class FormHandler extends GlobalUtil
 
     public function deleteFormData($id)
     {
-        $tableName = 'alumni';
+        $tableName = 'gc_alumni';
         $sql = "DELETE FROM $tableName WHERE alumni_id = ?";
         try {
             $stmt = $this->pdo->prepare($sql);
