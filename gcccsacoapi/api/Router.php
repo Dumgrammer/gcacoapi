@@ -85,27 +85,27 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         echo json_encode($forms->getFormData());
                     }
                     break;
-                    case  'alumni':
+                case  'contact':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getFormData($request[1]));
+                        echo json_encode($forms->getFormContact($request[1]));
                     } else {
-                        echo json_encode($forms->getFormData());
+                        echo json_encode($forms->getFormContact());
                     }
                     break;
-                    case  'contact':
-                        if (count($request) > 1) {
-                            echo json_encode($forms->getFormContact($request[1]));
-                        } else {
-                            echo json_encode($forms->getFormContact());
-                        }
-                        break;
-                        case  'education':
-                            if (count($request) > 1) {
-                                echo json_encode($forms->getFormCredentials($request[1]));
-                            } else {
-                                echo json_encode($forms->getFormCredentials());
-                            }
-                            break;
+                case  'education':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getFormCredentials($request[1]));
+                    } else {
+                        echo json_encode($forms->getFormCredentials());
+                    }
+                    break;
+                case  'archive':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getArchiveData($request[1]));
+                    } else {
+                        echo json_encode($forms->getArchiveData());
+                    }
+                    break;     
                 default:
                     echo "Method not available";
                     http_response_code(404);

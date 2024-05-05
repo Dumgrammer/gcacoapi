@@ -11,66 +11,70 @@ class FormHandler extends GlobalUtil
         $this->pdo = $pdo;
     }
 
-    public function submitFormData($formData){   
-
+    public function submitFormData($formData) {
         $tableAttributeMapping = [
-            'gc_alumni' => ['alumni_lastname','alumni_firstname','alumni_middlename','alumni_birthday','alumni_age'],
-            'gc_alumni_contact' => ['alumni_email','alumni_number','alumni_address'],
-            'gc_alumni_education' => ['year_graduated','alumni_program','education_upgrade'],
-            'gc_alumni_family' => ['alumni_marital_status','alumni_number_of_children','alumni_spousename','alumni_race','alumni_religion'],
-            'gc_history' => ['employment_status','working_in_abroad','working_in_industry','years_of_experience','current_job']
+            'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename', 'alumni_birthday', 'alumni_age'],
+            'gc_alumni_contact' => ['alumni_email', 'alumni_number', 'alumni_address'],
+            'gc_alumni_education' => ['year_graduated', 'alumni_program', 'education_upgrade'],
+            'gc_alumni_family' => ['alumni_marital_status', 'alumni_no_of_children', 'alumni_spousename', 'alumni_race', 'alumni_religion'],
+            'gc_history' => ['employment_status', 'working_in_abroad', 'working_in_industry', 'years_of_experience', 'current_job']
         ];
     
-        $formDataArray = (array) $formData;
+        try {
+            // Insert data into gc_alumni table
+            $alumniAttributes = array_intersect_key((array) $formData, array_flip($tableAttributeMapping['gc_alumni']));
+            $alumniSql = "INSERT INTO gc_alumni (" . implode(',', array_keys($alumniAttributes)) . ") VALUES (" . rtrim(str_repeat('?,', count($alumniAttributes)), ',') . ")";
+            $alumniStmt = $this->pdo->prepare($alumniSql);
+            $alumniStmt->execute(array_values($alumniAttributes));
+            $alumniId = $this->pdo->lastInsertId();
     
-        $inserted = false;
-    
-        foreach ($tableAttributeMapping as $table => $attributes) {
-            // Taga check ng table kung meron
-            $matchedAttributes = array_intersect($attributes, array_keys($formDataArray));
-            if (!empty($matchedAttributes)) {
-                try {
-                    // Prepare SQL query
-                    $sql = "INSERT INTO $table (" . implode(',', $matchedAttributes) . ") VALUES (" . rtrim(str_repeat('?,', count($matchedAttributes)), ',') . ")";
-                    $stmt = $this->pdo->prepare($sql);
-    
-                    // taga get ng values na paglalagyan ng data
-                    $values = array_intersect_key($formDataArray, array_flip($matchedAttributes));
-    
-                    $stmt->execute(array_values($values));
-    
-                    $inserted = true;
-    
-                    // Output success message
-                    echo "Data added successfully to $table!";
-                } catch (\PDOException $e) {
-                    // Handle error: Log or display the error message
-                    error_log("Failed to insert data into $table: " . $e->getMessage());
+            // Insert data into other related tables using the retrieved alumni_id
+            foreach ($tableAttributeMapping as $table => $attributes) {
+                if ($table !== 'gc_alumni') {
+                    $tableData = array_intersect_key((array) $formData, array_flip($attributes));
+                    $placeholders = rtrim(str_repeat('?,', count($tableData)), ',');
+                    $tableSql = "INSERT INTO $table (alumni_id," . implode(',', array_keys($tableData)) . ") VALUES (?, $placeholders)";
+                    $tableStmt = $this->pdo->prepare($tableSql);
+                    $tableValues = array_merge([$alumniId], array_values($tableData));
+                    $tableStmt->execute($tableValues);
                 }
             }
-        }
     
-        if ($inserted) {
-            // Return success response
             return $this->sendResponse("Data added successfully!", 201);
-        } else {
-            // Return error response if no data was inserted
-            return $this->sendErrorResponse("No matching table found for provided attributes", "Failed to add", 400);
+        } catch (\PDOException $e) {
+            error_log("Failed to insert data: " . $e->getMessage());
+            return $this->sendErrorResponse("Failed to add data", 500);
         }
     }
-    
     
     
     public function getFormData()
     {
         try {
             $tableName = 'gc_alumni'; 
-
-            $sql = "SELECT * FROM $tableName";
+    
+            $sql = "SELECT * FROM $tableName WHERE isVisible = 1";
             $stmt = $this->pdo->query($sql);
-
+    
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+    
+    public function getArchiveData()
+    {
+        try {
+            $tableName = 'gc_alumni'; 
+    
+            $sql = "SELECT * FROM $tableName WHERE isVisible = 0";
+            $stmt = $this->pdo->query($sql);
+    
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
             return $this->sendResponse($result, 200);
         } catch (\PDOException $e) {
             $errmsg = $e->getMessage();
@@ -94,6 +98,8 @@ class FormHandler extends GlobalUtil
             return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
         }
     }
+
+    
     public function getFormCredentials()
     {
         try {
