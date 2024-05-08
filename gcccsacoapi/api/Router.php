@@ -108,6 +108,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     } else {
                         echo json_encode($forms->getArchiveData());
                     }
+                case  'history':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getHistory($request[1]));
+                    } else {
+                        echo json_encode($forms->getHistory());
+                    }
                     break;     
                 default:
                     echo "Method not available";

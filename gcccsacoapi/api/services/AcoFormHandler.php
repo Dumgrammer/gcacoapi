@@ -74,6 +74,23 @@ class FormHandler extends GlobalUtil
         }
     }
 
+    public function getHistory()
+    {
+        try {
+            $tableName = 'gc_mailing_history'; 
+    
+            $sql = "SELECT * FROM $tableName";
+            $stmt = $this->pdo->query($sql);
+    
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+
     public function getFormData()
     {
         try {
