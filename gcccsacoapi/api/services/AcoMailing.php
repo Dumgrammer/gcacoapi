@@ -65,5 +65,6 @@ class Mail{
         $this->sendEmail($data);
     }
     
+
 }
 ?>

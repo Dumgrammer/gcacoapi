@@ -47,7 +47,33 @@ class FormHandler extends GlobalUtil
         }
     }
     
+    public function mailHistory($formData)
+    {
+        $tableName = 'gc_mailing_history';
     
+        // Convert object to array
+        $formDataArray = (array) $formData;
+    
+        // Include only scalar values in $attrs
+        $attrs = array_keys(array_filter($formDataArray, 'is_scalar'));
+        $quest = array_fill(0, count($attrs), '?');
+    
+        $sql = "INSERT INTO $tableName (" . implode(',', $attrs) . ") VALUES(" . implode(',', $quest) . ")";
+    
+        try {
+            $stmt = $this->pdo->prepare($sql);
+    
+            $values = array_values(array_filter($formDataArray, 'is_scalar'));
+            $stmt->execute($values);
+
+    
+            return $this->sendResponse("Form data added", 201);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse($errmsg, "Failed to add", 400);
+        }
+    }
+
     public function getFormData()
     {
         try {

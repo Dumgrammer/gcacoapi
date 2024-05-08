@@ -69,6 +69,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'schedule':
                 echo json_encode($mail->scheduledSend($data));
                 break;
+            case 'mailhistory':
+                echo json_encode($forms->mailHistory($data));
+                break;
             default:
                 echo "This is forbidden";
                 http_response_code(403);
