@@ -142,7 +142,107 @@ class FormHandler extends GlobalUtil
         }
     }
 
-    
+    public function getEmails()
+        {
+            try {
+                $tableName = 'gc_alumni_contact'; 
+
+                $sql = "SELECT alumni_email FROM $tableName";
+                $stmt = $this->pdo->query($sql);
+
+                $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                return $this->sendResponse($result, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+
+    public function getITEmails()
+        {
+            try {
+                $contactTableName = 'gc_alumni_contact';
+                $siblingTableName = 'gc_alumni_education';
+        
+                $sql = "SELECT c.alumni_email 
+                FROM $contactTableName c
+                INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
+                WHERE s.alumni_program = 'BSIT'";
+                
+                $stmt = $this->pdo->query($sql);
+        
+                $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+                return $this->sendResponse($result, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+    public function getCSEmails()
+        {
+            try {
+                $contactTableName = 'gc_alumni_contact';
+                $siblingTableName = 'gc_alumni_education';
+        
+                $sql = "SELECT c.alumni_email 
+                FROM $contactTableName c
+                INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
+                WHERE s.alumni_program = 'BSCS'";
+                
+                $stmt = $this->pdo->query($sql);
+        
+                $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+                return $this->sendResponse($result, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }    
+    public function getEMCEmails()
+        {
+            try {
+                $contactTableName = 'gc_alumni_contact';
+                $siblingTableName = 'gc_alumni_education';
+        
+                $sql = "SELECT c.alumni_email 
+                FROM $contactTableName c
+                INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
+                WHERE s.alumni_program = 'BSEMC'";
+                
+                $stmt = $this->pdo->query($sql);
+        
+                $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+                return $this->sendResponse($result, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+    public function getACTEmails()
+        {
+            try {
+                $contactTableName = 'gc_alumni_contact';
+                $siblingTableName = 'gc_alumni_education';
+        
+                $sql = "SELECT c.alumni_email 
+                FROM $contactTableName c
+                INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
+                WHERE s.alumni_program = 'ACT'";
+                
+                $stmt = $this->pdo->query($sql);
+        
+                $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        
+                return $this->sendResponse($result, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }   
     public function getFormCredentials()
     {
         try {

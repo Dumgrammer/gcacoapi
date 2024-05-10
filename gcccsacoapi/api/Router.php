@@ -115,6 +115,41 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         echo json_encode($forms->getHistory());
                     }
                     break;     
+                case  'emails':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getEmails($request[1]));
+                    } else {
+                        echo json_encode($forms->getEmails());
+                    }
+                    break;
+                case  'itemails':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getITEmails($request[1]));
+                    } else {
+                        echo json_encode($forms->getITEmails());
+                    }
+                    break;
+                case  'csemails':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getCSEmails($request[1]));
+                    } else {
+                        echo json_encode($forms->getCSEmails());
+                    }
+                    break;
+                case  'emcemails':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getEMCEmails($request[1]));
+                    } else {
+                        echo json_encode($forms->getEMCEmails());
+                    }
+                    break;
+                case  'actemails':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getACTEmails($request[1]));
+                    } else {
+                        echo json_encode($forms->getACTEmails());
+                    }
+                    break;        
                 default:
                     echo "Method not available";
                     http_response_code(404);
