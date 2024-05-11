@@ -136,5 +136,18 @@ class Login {
     private function getExpirationTime() {
         return time() + 60;
     }
+
+    public function logoutUser() {
+        // Unset or clear the JWT cookie
+        setcookie("jwt", "", time() - 3600, '/');
+
+        // You may also want to redirect the user to the login page or any other appropriate page after logout
+        $response = array(
+            "message" => "Successfully logged out"
+        );
+
+        http_response_code(200);
+        echo json_encode($response);
+    }
 }
 ?>

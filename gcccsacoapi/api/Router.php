@@ -47,6 +47,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case 'login':
                 echo json_encode($login->loginUser($data));
                 break;
+            case 'logout':
+                echo json_encode($login->logoutUser($data));
+                break;
             case 'register':
                 echo json_encode($register->registerUser($data));
                 break;
