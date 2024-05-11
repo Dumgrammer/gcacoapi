@@ -284,6 +284,31 @@ class FormHandler extends GlobalUtil
             return $this->sendErrorResponse("Failed to update: " . $errmsg, 400);
         }
     }
+
+    public function updateVisibility($recordIds, $isVisible) {
+        $tableName = 'gc_alumni'; 
+    
+        $isVisible = is_numeric($isVisible) ? intval($isVisible) : 0;
+    
+        $placeholders = rtrim(str_repeat('?,', count($recordIds)), ',');
+        $sql = "UPDATE $tableName SET isVisible = ? WHERE alumni_id IN ($placeholders)";
+    
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            
+            // Combine the visibility value and record IDs into a single array
+            $params = array_merge([$isVisible], $recordIds);
+    
+            $stmt->execute($params);
+    
+            return $this->sendResponse("Visibility updated", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to update visibility: " . $errmsg, 400);
+        }
+    }
+    
+    
     
 
     public function deleteFormData($id)
