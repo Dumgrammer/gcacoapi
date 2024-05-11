@@ -95,7 +95,7 @@ class Login {
         $issuedAt = time();
         $notBefore = $issuedAt + 10;
         $expiredAt = $issuedAt + 60;
-
+    
         $token = array(
             "iss" => $issuerClaim,
             "aud" => $audienceClaim,
@@ -109,45 +109,38 @@ class Login {
                 "email" => $email
             )
         );
-
+    
         $jwt = JWT::encode($token, $secretKey, 'HS512');
-
-        setcookie("jwt", $jwt, [
-
-        'expires' => $expiredAt,
-        'path' =>  "/",
-        'domain' => "",
-        'secure' => false,
-        'httponly' => true,
-        'samesite' => 'None'
-    ]);
+    
+        // Log the generated token for debugging
+        error_log("Generated token: $jwt");
+        error_log("Token content: " . print_r($token, true));
         
-    $response = array(
-        "message" => "Successfully Login!",
-        "jwt" => $jwt,
-        "email" => $email,
-        "expireAt" => $this->getExpirationTime(),
-        "redirect" => "/statistics"
-    );
-    http_response_code(200);
-    echo json_encode($response);
+
+        $response = array(
+            "message" => "Successfully Login!",
+            "jwt" => $jwt,
+            "email" => $email,
+            "expireAt" => $this->getExpirationTime(),
+            "redirect" => "/statistics"
+        );
+        error_log("Login response: " . json_encode($response));
+        http_response_code(200);
+        echo json_encode($response);
     }
+    
+    
 
     private function getExpirationTime() {
         return time() + 60;
     }
 
     public function logoutUser() {
-        // Unset or clear the JWT cookie
+
         setcookie("jwt", "", time() - 3600, '/');
 
-        // You may also want to redirect the user to the login page or any other appropriate page after logout
-        $response = array(
-            "message" => "Successfully logged out"
-        );
 
         http_response_code(200);
-        echo json_encode($response);
     }
 }
 ?>

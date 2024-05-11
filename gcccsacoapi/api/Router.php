@@ -111,6 +111,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     } else {
                         echo json_encode($forms->getArchiveData());
                     }
+                    break;
                 case  'history':
                     if (count($request) > 1) {
                         echo json_encode($forms->getHistory($request[1]));

@@ -111,9 +111,18 @@ class FormHandler extends GlobalUtil
     public function getArchiveData()
     {
         try {
-            $tableName = 'gc_alumni'; 
+            
+            $alumniTable = 'gc_alumni';
+            $contactTableName = 'gc_alumni_contact';
+            $educationTableName = 'gc_alumni_education';
     
-            $sql = "SELECT * FROM $tableName WHERE isVisible = 0";
+            $sql = "SELECT a.alumni_id, a.alumni_lastname, a.alumni_firstname, a.alumni_middlename, 
+                           c.alumni_email, e.alumni_program, e.year_graduated
+                    FROM $alumniTable a
+                    INNER JOIN $contactTableName c ON a.alumni_id = c.alumni_id
+                    INNER JOIN $educationTableName e ON a.alumni_id = e.alumni_id
+                    WHERE a.isVisible = 0";
+            
             $stmt = $this->pdo->query($sql);
     
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -121,9 +130,9 @@ class FormHandler extends GlobalUtil
             return $this->sendResponse($result, 200);
         } catch (\PDOException $e) {
             $errmsg = $e->getMessage();
-            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+            return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
         }
-    }
+    }    
 
     public function getFormContact()
     {
