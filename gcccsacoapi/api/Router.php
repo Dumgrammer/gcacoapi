@@ -164,9 +164,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         if (isset($data->recordIds) && isset($data->visibilityValue)) {
                             $result = $forms->updateVisibility($data->recordIds, $data->visibilityValue);
                             if ($result['status'] === 'success') {
-                                echo json_encode($forms->sendResponse("Records deleted successfully", 200));
+                                echo json_encode($forms->sendResponse("Records visibility updated successfully", 200));
                             } else {
-                                echo json_encode($forms->sendErrorResponse("Failed to delete records", 400));
+                                echo json_encode($forms->sendErrorResponse("Failed to update records", 400));
                             }
                         } else {
                             echo json_encode($forms->sendErrorResponse("Invalid Request", 400));
