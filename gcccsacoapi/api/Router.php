@@ -45,7 +45,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $data = json_decode(file_get_contents("php://input"));
         switch ($request[0]) {
             case 'login':
-                echo json_encode($login->loginUser($data));
+                echo json_encode($login->loginUser($data->email, $data->password));
                 break;
             case 'logout':
                 echo json_encode($login->logoutUser($data));
