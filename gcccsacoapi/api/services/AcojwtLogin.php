@@ -34,7 +34,6 @@ class Login {
                 'message' => 'Invalid email or password'
             ];
         }
-
         $payload = [
             'iss' => 'localhost',
             'aud' => 'localhost',
