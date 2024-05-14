@@ -118,7 +118,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     } else {
                         echo json_encode($forms->getHistory());
                     }
-                    break;     
+                    break;
+                case  'gchistory':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getGCHistory($request[1]));
+                    } else {
+                        echo json_encode($forms->getGCHistory());
+                    }
+                    break;      
                 case  'emails':
                     if (count($request) > 1) {
                         echo json_encode($forms->getEmails($request[1]));
@@ -153,7 +160,35 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     } else {
                         echo json_encode($forms->getACTEmails());
                     }
-                    break;        
+                    break;
+                case  'employed':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getEmployed($request[1]));
+                    } else {
+                        echo json_encode($forms->getEmployed());
+                    }
+                    break;
+                case  'unemployed':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getUnemployed($request[1]));
+                    } else {
+                        echo json_encode($forms->getUnemployed());
+                    }
+                    break;
+                case  'selfemployed':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->selfEmployed($request[1]));
+                    } else {
+                        echo json_encode($forms->selfEmployed());
+                    }
+                    break;
+                case  'businessman':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->businessMan($request[1]));
+                    } else {
+                        echo json_encode($forms->businessMan());
+                    }
+                    break;               
                 default:
                     echo "Method not available";
                     http_response_code(404);

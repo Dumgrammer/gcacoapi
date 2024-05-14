@@ -91,6 +91,23 @@ class FormHandler extends GlobalUtil
         }
     }
 
+    public function getGCHistory()
+    {
+        try {
+            $tableName = 'gc_history'; 
+    
+            $sql = "SELECT * FROM $tableName";
+            $stmt = $this->pdo->query($sql);
+    
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+
     public function getFormData()
     {
         try {
@@ -231,6 +248,106 @@ class FormHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
+
+    public function getEmployed()
+        {
+            try {
+                $history = 'gc_history';
+                
+               
+                $sql = "SELECT COUNT(*) as employed_count FROM $history WHERE employment_status = 'Working'";
+                
+                $stmt = $this->pdo->query($sql);
+                
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $response = [
+                    'status' => 'success',
+                    'data' => $result,
+                    'statusCode' => 200
+                ];
+                
+                return $this->sendResponse($response, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+    public function getUnemployed()
+        {
+            try {
+                $history = 'gc_history';
+                
+               
+                $sql = "SELECT COUNT(*) as unemployed_count FROM $history WHERE employment_status = 'Not Working'";
+                
+                $stmt = $this->pdo->query($sql);
+                
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $response = [
+                    'status' => 'success',
+                    'data' => $result,
+                    'statusCode' => 200
+                ];
+                
+                return $this->sendResponse($response, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+        
+        
+    public function selfEmployed()
+        {
+            try {
+                $history = 'gc_history';
+                
+               
+                $sql = "SELECT COUNT(*) as selfemployed_count FROM $history WHERE employment_status = 'Self Employed'";
+                
+                $stmt = $this->pdo->query($sql);
+                
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $response = [
+                    'status' => 'success',
+                    'data' => $result,
+                    'statusCode' => 200
+                ];
+                
+                return $this->sendResponse($response, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+    public function businessMan()
+        {
+            try {
+                $history = 'gc_history';
+                
+               
+                $sql = "SELECT COUNT(*) as businessman_count FROM $history WHERE employment_status = 'Businessman'";
+                
+                $stmt = $this->pdo->query($sql);
+                
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                $response = [
+                    'status' => 'success',
+                    'data' => $result,
+                    'statusCode' => 200
+                ];
+                
+                return $this->sendResponse($response, 200);
+            } catch (\PDOException $e) {
+                $errmsg = $e->getMessage();
+                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+            }
+        }
+
     public function getACTEmails()
         {
             try {
