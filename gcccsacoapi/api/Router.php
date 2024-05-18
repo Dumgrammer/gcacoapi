@@ -7,6 +7,7 @@ require_once(__DIR__.'./services/AcoMailing.php');
 require_once(__DIR__.'./services/AcoFormHandler.php');
 require_once(__DIR__.'./services/AcoEmails.php');
 require_once(__DIR__.'./services/AcoHistory.php');
+require_once(__DIR__.'./services/AcoFamily.php');
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -35,6 +36,7 @@ $mail = new Mail($pdo);
 $forms = new FormHandler($pdo);
 $emails = new EmailHandler($pdo);
 $history = new HistoryHandler($pdo);
+$family = new FamilyHandler($pdo);
 
 if (isset($_REQUEST['request'])) {
     $request = explode('/', $_REQUEST['request']);
@@ -174,32 +176,95 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     break;
                 case  'employed':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getEmployed($request[1]));
+                        echo json_encode($history->getEmployed($request[1]));
                     } else {
-                        echo json_encode($forms->getEmployed());
+                        echo json_encode($history->getEmployed());
                     }
                     break;
                 case  'unemployed':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getUnemployed($request[1]));
+                        echo json_encode($history->getUnemployed($request[1]));
                     } else {
-                        echo json_encode($forms->getUnemployed());
+                        echo json_encode($history->getUnemployed());
                     }
                     break;
                 case  'selfemployed':
                     if (count($request) > 1) {
-                        echo json_encode($forms->selfEmployed($request[1]));
+                        echo json_encode($history->selfEmployed($request[1]));
                     } else {
-                        echo json_encode($forms->selfEmployed());
+                        echo json_encode($history->selfEmployed());
                     }
                     break;
-                case  'businessman':
+                case  'looking':
                     if (count($request) > 1) {
-                        echo json_encode($forms->businessMan($request[1]));
+                        echo json_encode($history->lookingforWork($request[1]));
                     } else {
-                        echo json_encode($forms->businessMan());
+                        echo json_encode($history->lookingforWork());
                     }
-                    break;               
+                    break;     
+                case  'student':
+                    if (count($request) > 1) {
+                        echo json_encode($history->getStudent($request[1]));
+                    } else {
+                        echo json_encode($history->getStudent());
+                    }
+                    break;
+                case  'retired':
+                    if (count($request) > 1) {
+                        echo json_encode($history->getRetired($request[1]));
+                    } else {
+                        echo json_encode($history->getRetired());
+                    }
+                    break;
+                case  'parttime':
+                    if (count($request) > 1) {
+                        echo json_encode($history->getParttime($request[1]));
+                    } else {
+                        echo json_encode($history->getParttime());
+                    }
+                    break;
+                case  'status':
+                    if (count($request) > 1) {
+                        echo json_encode($family->getStatus($request[1]));
+                    } else {
+                        echo json_encode($family->getStatus());
+                    }
+                    break;
+                case  'child':
+                    if (count($request) > 1) {
+                        echo json_encode($family->alumniChild($request[1]));
+                    } else {
+                        echo json_encode($family->alumniChild());
+                    }
+                    break;
+                case  'frequent':
+                    if (count($request) > 1) {
+                        echo json_encode($history->mostfrequestJob($request[1]));
+                    } else {
+                        echo json_encode($history->mostfrequestJob());
+                    }
+                    break;
+                case  'abroad':
+                    if (count($request) > 1) {
+                        echo json_encode($history->workingAbroad($request[1]));
+                    } else {
+                        echo json_encode($history->workingAbroad());
+                    }
+                    break;
+                case  'local':
+                    if (count($request) > 1) {
+                        echo json_encode($history->workingLocally($request[1]));
+                    } else {
+                        echo json_encode($history->workingLocally());
+                    }
+                    break;
+                case  'industry':
+                    if (count($request) > 1) {
+                        echo json_encode($history->workingITindustry($request[1]));
+                    } else {
+                        echo json_encode($history->workingITindustry());
+                    }
+                    break;                             
                 default:
                     echo "Method not available";
                     http_response_code(404);
