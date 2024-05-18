@@ -14,7 +14,7 @@ class FormHandler extends GlobalUtil
     public function submitFormData($formData) {
         $tableAttributeMapping = [
             'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename', 'alumni_birthday', 'alumni_age'],
-            'gc_alumni_contact' => ['alumni_email', 'alumni_number', 'alumni_address'],
+            'gc_alumni_contact' => ['alumni_email', 'alumni_number', 'alumni_address', 'alumni_notify'],
             'gc_alumni_education' => ['year_graduated', 'alumni_program', 'education_upgrade'],
             'gc_alumni_family' => ['alumni_marital_status', 'alumni_no_of_children', 'alumni_spousename', 'alumni_race', 'alumni_religion'],
             'gc_history' => ['employment_status', 'working_in_abroad', 'working_in_industry', 'years_of_experience', 'current_job']
@@ -125,6 +125,24 @@ class FormHandler extends GlobalUtil
         }
     }
     
+
+    public function getPending()
+    {
+        try {
+            $tableName = 'gc_alumni'; 
+    
+            $sql = "SELECT * FROM $tableName WHERE isVisible = 2";
+            $stmt = $this->pdo->query($sql);
+    
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve" . $errmsg, 400);
+        }
+    }
+
     public function getArchiveData()
     {
         try {
@@ -173,7 +191,7 @@ class FormHandler extends GlobalUtil
             try {
                 $tableName = 'gc_alumni_contact'; 
 
-                $sql = "SELECT alumni_email FROM $tableName";
+                $sql = "SELECT alumni_email FROM $tableName WHERE alumni_notify = '1'";
                 $stmt = $this->pdo->query($sql);
 
                 $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -194,7 +212,7 @@ class FormHandler extends GlobalUtil
                 $sql = "SELECT c.alumni_email 
                 FROM $contactTableName c
                 INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
-                WHERE s.alumni_program = 'BSIT'";
+                WHERE s.alumni_program = 'BSIT' AND c.alumni_notify = '1'";
                 
                 $stmt = $this->pdo->query($sql);
         
@@ -215,7 +233,7 @@ class FormHandler extends GlobalUtil
                 $sql = "SELECT c.alumni_email 
                 FROM $contactTableName c
                 INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
-                WHERE s.alumni_program = 'BSCS'";
+                WHERE s.alumni_program = 'BSCS' AND c.alumni_notify = '1'";
                 
                 $stmt = $this->pdo->query($sql);
         
@@ -236,7 +254,7 @@ class FormHandler extends GlobalUtil
                 $sql = "SELECT c.alumni_email 
                 FROM $contactTableName c
                 INNER JOIN $siblingTableName s ON c.alumni_id = s.alumni_id
-                WHERE s.alumni_program = 'BSEMC'";
+                WHERE s.alumni_program = 'BSEMC' AND c.alumni_notify = '1'";
                 
                 $stmt = $this->pdo->query($sql);
         
@@ -386,30 +404,46 @@ class FormHandler extends GlobalUtil
         }
     }
 
-    public function updateFormData($id, $formData){
-        $tableName = 'gc_alumni'; 
+    public function updateFormData($id, $formData) {
+        $tableName = 'gc_admin'; 
     
-        $attrs = array_keys((array) $formData);
+        // Map frontend field names to backend table column names
+        $fieldMappings = [
+            'firstname' => 'faculty_firstname',
+            'lastname' => 'faculty_lastname',
+            'email' => 'admin_email',
+            'position' => 'admin_pos'
+            // Add mappings for other fields as needed
+        ];
+    
+        // Modify formData keys according to the mappings
+        $mappedFormData = [];
+        foreach ($formData as $key => $value) {
+            if (isset($fieldMappings[$key])) {
+                $mappedFormData[$fieldMappings[$key]] = $value;
+            }
+        }
+    
+        // Construct SQL UPDATE statement
         $updateStatements = array_map(function ($attr) {
             return "$attr = ?"; 
-        }, $attrs);
-    
-        $sql = "UPDATE $tableName SET " . implode(', ', $updateStatements) . " WHERE alumni_id = ?";
+        }, array_keys($mappedFormData));
+        $sql = "UPDATE $tableName SET " . implode(', ', $updateStatements) . " WHERE admin_id = ?";
     
         try {
             $stmt = $this->pdo->prepare($sql);
-    
-            $values = array_values((array) $formData);
+            $values = array_values($mappedFormData);
             $values[] = (int) $id;
-    
             $stmt->execute($values);
     
             return $this->sendResponse("Form data updated", 200);
         } catch (\PDOException $e) {
             $errmsg = $e->getMessage();
+            error_log("Failed to update: " . $errmsg); // Add logging here
             return $this->sendErrorResponse("Failed to update: " . $errmsg, 400);
         }
     }
+    
 
     public function updateVisibility($recordIds, $isVisible) {
         $tableName = 'gc_alumni'; 
@@ -433,23 +467,48 @@ class FormHandler extends GlobalUtil
             return $this->sendErrorResponse("Failed to update visibility: " . $errmsg, 400);
         }
     }
+        
+    public function getAccepted($recordIds, $isVisible) {
+        $tableName = 'gc_alumni'; 
     
+        $isVisible = is_numeric($isVisible) ? intval($isVisible) : 1;
     
+        $placeholders = rtrim(str_repeat('?,', count($recordIds)), ',');
+        $sql = "UPDATE $tableName SET isVisible = ? WHERE alumni_id IN ($placeholders)";
     
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            
+            // Combine the visibility value and record IDs into a single array
+            $params = array_merge([$isVisible], $recordIds);
+    
+            $stmt->execute($params);
+    
+            return $this->sendResponse("Visibility updated", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to update visibility: " . $errmsg, 400);
+        }
+    }
 
-    public function deleteFormData($id)
+    public function deleteFormData($recordIds)
     {
         $tableName = 'gc_alumni';
         $sql = "DELETE FROM $tableName WHERE alumni_id = ?";
         try {
             $stmt = $this->pdo->prepare($sql);
-            $stmt->execute([$id]);
-
+            
+            // Loop over each record ID and execute the statement for each ID
+            foreach ($recordIds as $id) {
+                $stmt->execute([$id]);
+            }
+    
             return $this->sendResponse("Form Deleted", 200);
         } catch (\PDOException $e) {
             $errmsg = $e->getMessage();
             return $this->sendErrorResponse("Failed to delete" . $errmsg, 400);
         }
     }
+    
 }
 ?>

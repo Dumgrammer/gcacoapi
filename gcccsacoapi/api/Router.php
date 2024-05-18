@@ -64,7 +64,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 }
                 break;
             case 'deleterecord':
-                echo json_encode($forms->deleteFormData($request[1], $data));
+                echo json_encode($forms->deleteFormData($data->recordIds));
                 break;
             case 'mail':
                 echo json_encode($mail->sendEmail($data));
@@ -89,6 +89,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
                         echo json_encode($forms->getFormData($request[1]));
                     } else {
                         echo json_encode($forms->getFormData());
+                    }
+                    break;
+                case  'pending':
+                    if (count($request) > 1) {
+                        echo json_encode($forms->getPending($request[1]));
+                    } else {
+                        echo json_encode($forms->getPending());
                     }
                     break;
                 case  'contact':
@@ -211,11 +218,24 @@ switch ($_SERVER['REQUEST_METHOD']) {
                             echo json_encode($forms->sendErrorResponse("Invalid Request", 400));
                         }
                         break;
+                    case 'getaccepted':
+                        // Assuming JSON data is sent in the request body
+                        if (isset($data->recordIds) && isset($data->visibilityValue)) {
+                            $result = $forms->getAccepted($data->recordIds, $data->visibilityValue);
+                            if ($result['status'] === 'success') {
+                                echo json_encode($forms->sendResponse("Records visibility updated successfully", 200));
+                            } else {
+                                echo json_encode($forms->sendErrorResponse("Failed to update records", 400));
+                            }
+                        } else {
+                            echo json_encode($forms->sendErrorResponse("Invalid Request", 400));
+                        }
+                        break;
                     default:
                         echo "Method not available";
                         http_response_code(404);
                         break;
-            
+                        
                 }
                 break;
         

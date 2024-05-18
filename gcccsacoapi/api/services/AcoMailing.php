@@ -50,7 +50,6 @@ class Mail{
 
         $nextSunday = strtotime('next Sunday 8:00:00');
     
-        $currentDayOfWeek = date('N');
         $currentTime = time();
     
 
@@ -64,7 +63,6 @@ class Mail{
 
         $this->sendEmail($data);
     }
-    
 
 }
 ?>
