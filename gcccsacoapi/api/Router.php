@@ -5,6 +5,8 @@ require_once(__DIR__. './services/AcojwtLogin.php');
 require_once(__DIR__.'./services/AcojwtRegister.php');
 require_once(__DIR__.'./services/AcoMailing.php');
 require_once(__DIR__.'./services/AcoFormHandler.php');
+require_once(__DIR__.'./services/AcoEmails.php');
+require_once(__DIR__.'./services/AcoHistory.php');
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -31,6 +33,8 @@ $register = new RegisterUser($pdo);
 $login = new Login($pdo);
 $mail = new Mail($pdo);
 $forms = new FormHandler($pdo);
+$emails = new EmailHandler($pdo);
+$history = new HistoryHandler($pdo);
 
 if (isset($_REQUEST['request'])) {
     $request = explode('/', $_REQUEST['request']);
@@ -73,7 +77,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 echo json_encode($mail->scheduledSend($data));
                 break;
             case 'mailhistory':
-                echo json_encode($forms->mailHistory($data));
+                echo json_encode($emails->mailHistory($data));
                 break;
             default:
                 echo "This is forbidden";
@@ -121,51 +125,51 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     break;
                 case  'history':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getHistory($request[1]));
+                        echo json_encode($emails->getHistory($request[1]));
                     } else {
-                        echo json_encode($forms->getHistory());
+                        echo json_encode($emails->getHistory());
                     }
                     break;
                 case  'gchistory':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getGCHistory($request[1]));
+                        echo json_encode($history->getGCHistory($request[1]));
                     } else {
-                        echo json_encode($forms->getGCHistory());
+                        echo json_encode($history->getGCHistory());
                     }
                     break;      
                 case  'emails':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getEmails($request[1]));
+                        echo json_encode($emails->getEmails($request[1]));
                     } else {
-                        echo json_encode($forms->getEmails());
+                        echo json_encode($emails->getEmails());
                     }
                     break;
                 case  'itemails':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getITEmails($request[1]));
+                        echo json_encode($emails->getITEmails($request[1]));
                     } else {
-                        echo json_encode($forms->getITEmails());
+                        echo json_encode($emails->getITEmails());
                     }
                     break;
                 case  'csemails':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getCSEmails($request[1]));
+                        echo json_encode($emails->getCSEmails($request[1]));
                     } else {
-                        echo json_encode($forms->getCSEmails());
+                        echo json_encode($emails->getCSEmails());
                     }
                     break;
                 case  'emcemails':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getEMCEmails($request[1]));
+                        echo json_encode($emails->getEMCEmails($request[1]));
                     } else {
-                        echo json_encode($forms->getEMCEmails());
+                        echo json_encode($emails->getEMCEmails());
                     }
                     break;
                 case  'actemails':
                     if (count($request) > 1) {
-                        echo json_encode($forms->getACTEmails($request[1]));
+                        echo json_encode($emails->getACTEmails($request[1]));
                     } else {
-                        echo json_encode($forms->getACTEmails());
+                        echo json_encode($emails->getACTEmails());
                     }
                     break;
                 case  'employed':
