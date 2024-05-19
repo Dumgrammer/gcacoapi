@@ -8,6 +8,7 @@ require_once(__DIR__.'./services/AcoFormHandler.php');
 require_once(__DIR__.'./services/AcoEmails.php');
 require_once(__DIR__.'./services/AcoHistory.php');
 require_once(__DIR__.'./services/AcoFamily.php');
+require_once(__DIR__.'./services/AcoStatistics.php');
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -37,6 +38,7 @@ $forms = new FormHandler($pdo);
 $emails = new EmailHandler($pdo);
 $history = new HistoryHandler($pdo);
 $family = new FamilyHandler($pdo);
+$statistics = new StatisticsHandler($pdo);
 
 if (isset($_REQUEST['request'])) {
     $request = explode('/', $_REQUEST['request']);
@@ -80,6 +82,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 break;
             case 'mailhistory':
                 echo json_encode($emails->mailHistory($data));
+                break;
+            case  'addrate':
+                echo json_encode($statistics->insertRate($data));
                 break;
             default:
                 echo "This is forbidden";
@@ -264,7 +269,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     } else {
                         echo json_encode($history->workingITindustry());
                     }
-                    break;                             
+                    break;
+                case  'gradrate':
+                    if (count($request) > 1) {
+                        echo json_encode($statistics->getGradrate($request[1]));
+                    } else {
+                        echo json_encode($statistics->getGradrate());
+                    }
+                    break;                              
                 default:
                     echo "Method not available";
                     http_response_code(404);
