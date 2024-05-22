@@ -1,14 +1,14 @@
 <?php
 
-require_once(__DIR__.'./config/AcoDatabase.php');
-require_once(__DIR__. './services/AcojwtLogin.php');
-require_once(__DIR__.'./services/AcojwtRegister.php');
-require_once(__DIR__.'./services/AcoMailing.php');
-require_once(__DIR__.'./services/AcoFormHandler.php');
-require_once(__DIR__.'./services/AcoEmails.php');
-require_once(__DIR__.'./services/AcoHistory.php');
-require_once(__DIR__.'./services/AcoFamily.php');
-require_once(__DIR__.'./services/AcoStatistics.php');
+include('./config/AcoDatabase.php');
+include( './services/AcojwtLogin.php');
+include('./services/AcojwtRegister.php');
+include('./services/AcoMailing.php');
+include('./services/AcoFormHandler.php');
+include('./services/AcoEmails.php');
+include('./services/AcoHistory.php');
+include('./services/AcoFamily.php');
+include('./services/AcoStatistics.php');
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -27,6 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     exit(0);
 }
+
+// Your main code logic here
+
 
 $conn = new DatabaseAccess();
 $pdo = $conn->connect();

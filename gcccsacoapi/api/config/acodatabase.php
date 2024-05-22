@@ -22,6 +22,7 @@ class DatabaseAccess {
         ];
     }
 
+    
     public function connect() {
         try {
             $pdo = new \PDO($this->connectionString, USER, PASSWORD, $this->pdo_options);
