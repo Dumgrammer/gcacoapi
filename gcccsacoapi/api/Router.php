@@ -89,6 +89,9 @@ switch ($_SERVER['REQUEST_METHOD']) {
             case  'addrate':
                 echo json_encode($statistics->insertRate($data));
                 break;
+            case 'importData':
+                echo json_encode($forms->importData($data));
+                break;
             default:
                 echo "This is forbidden";
                 http_response_code(403);
