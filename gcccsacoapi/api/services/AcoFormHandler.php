@@ -94,41 +94,69 @@ class FormHandler extends GlobalUtil
     
     public function importData($formDataArray)
     {
-    $tableAttributeMapping = [
-        'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename'],
-        'gc_alumni_contact' => ['alumni_email'],
-        'gc_alumni_education' => ['year_graduated', 'alumni_program'],
-    ];
+        $tableAttributeMapping = [
+            'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename'],
+            'gc_alumni_contact' => ['alumni_email'],
+            'gc_alumni_education' => ['year_graduated', 'alumni_program'],
+        ];
+        
+        try {
+            foreach ($formDataArray as $formData) {
+                $formData = (array)$formData; // Ensure $formData is an array
     
-    try {
-        foreach ($formDataArray as $formData) {
-            $formData = (array)$formData; // Ensure $formData is an array
-
-            // Check if the record already exists in gc_alumni table
-            $existingAlumniSql = "SELECT alumni_id FROM gc_alumni WHERE alumni_lastname = ? AND alumni_firstname = ? AND alumni_middlename = ?";
-            $existingAlumniStmt = $this->pdo->prepare($existingAlumniSql);
-            $existingAlumniStmt->execute([$formData['alumni_lastname'], $formData['alumni_firstname'], $formData['alumni_middlename']]);
-            $existingAlumniId = $existingAlumniStmt->fetchColumn();
-
-            if ($existingAlumniId) {
-                // Record exists, update isVisible to 1
-                $updateVisibilitySql = "UPDATE gc_alumni SET isVisible = 1 WHERE alumni_id = ?";
-                $updateVisibilityStmt = $this->pdo->prepare($updateVisibilitySql);
-                $updateVisibilityStmt->execute([$existingAlumniId]);
-                
-                // No need to insert a new record or update other tables, as we only update visibility
-                continue;
+                // Check if the record already exists in gc_alumni table
+                $existingAlumniSql = "SELECT alumni_id FROM gc_alumni WHERE alumni_lastname = ? AND alumni_firstname = ? AND alumni_middlename = ?";
+                $existingAlumniStmt = $this->pdo->prepare($existingAlumniSql);
+                $existingAlumniStmt->execute([$formData['alumni_lastname'], $formData['alumni_firstname'], $formData['alumni_middlename']]);
+                $existingAlumniId = $existingAlumniStmt->fetchColumn();
+    
+                if ($existingAlumniId) {
+                    // Record exists, update isVisible to 1
+                    $updateVisibilitySql = "UPDATE gc_alumni SET isVisible = 1 WHERE alumni_id = ?";
+                    $updateVisibilityStmt = $this->pdo->prepare($updateVisibilitySql);
+                    $updateVisibilityStmt->execute([$existingAlumniId]);
+                    
+                    // No need to insert a new record or update other tables, as we only update visibility
+                    continue;
+                }
+    
+                // Insert data into gc_alumni table
+                $alumniAttributes = array_intersect_key($formData, array_flip($tableAttributeMapping['gc_alumni']));
+                $alumniSql = "INSERT INTO gc_alumni (" . implode(',', array_keys($alumniAttributes)) . ") VALUES (" . rtrim(str_repeat('?,', count($alumniAttributes)), ',') . ")";
+                $alumniStmt = $this->pdo->prepare($alumniSql);
+                $alumniStmt->execute(array_values($alumniAttributes));
+                $alumniId = $this->pdo->lastInsertId();
+    
+                // Insert data into gc_alumni_contact table
+                $contactAttributes = array_intersect_key($formData, array_flip($tableAttributeMapping['gc_alumni_contact']));
+                if (!empty($contactAttributes)) {
+                    $contactSql = "INSERT INTO gc_alumni_contact (alumni_id, " . implode(',', array_keys($contactAttributes)) . ") VALUES (?, " . rtrim(str_repeat('?,', count($contactAttributes)), ',') . ")";
+                    $contactStmt = $this->pdo->prepare($contactSql);
+                    if (!$contactStmt->execute(array_merge([$alumniId], array_values($contactAttributes)))) {
+                        error_log("Failed to insert into gc_alumni_contact: " . implode(', ', $contactStmt->errorInfo()));
+                    }
+                } else {
+                    error_log("No data found for gc_alumni_contact");
+                }
+    
+                // Insert data into gc_alumni_education table
+                $educationAttributes = array_intersect_key($formData, array_flip($tableAttributeMapping['gc_alumni_education']));
+                if (!empty($educationAttributes)) {
+                    $educationSql = "INSERT INTO gc_alumni_education (alumni_id, " . implode(',', array_keys($educationAttributes)) . ") VALUES (?, " . rtrim(str_repeat('?,', count($educationAttributes)), ',') . ")";
+                    $educationStmt = $this->pdo->prepare($educationSql);
+                    if (!$educationStmt->execute(array_merge([$alumniId], array_values($educationAttributes)))) {
+                        error_log("Failed to insert into gc_alumni_education: " . implode(', ', $educationStmt->errorInfo()));
+                    }
+                } else {
+                    error_log("No data found for gc_alumni_education");
+                }
             }
-
-           
-          
+    
+            return $this->sendResponse("Data imported successfully!", 201);
+        } catch (\PDOException $e) {
+            error_log("Failed to import data: " . $e->getMessage());
+            return $this->sendErrorResponse("Failed to import data", 500);
         }
-
-        return $this->sendResponse("Data updated successfully!", 201);
-    } catch (\PDOException $e) {
-        error_log("Failed to import data: " . $e->getMessage());
-        return $this->sendErrorResponse("Failed to update data", 500);
-    }
     }
 
     public function getAlumnidata($alumni_id) {
