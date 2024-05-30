@@ -6,7 +6,7 @@ use Firebase\JWT\JWT;
 
 require_once(__DIR__ . '/../config/AcoDatabase.php');
 require_once(__DIR__ . '/../config/secretKey.php');
-require_once(__DIR__ . '/../../vendor/autoload.php');
+require_once(__DIR__ . '/../vendor/autoload.php');
 
 class Login {
     private $conn;
@@ -51,7 +51,7 @@ class Login {
 
         return [
             'status' => 200,
-            'jwt' => $jwt,
+            'jwt' => $jwt,  
             'message' => 'Login Successful'
         ];
     }

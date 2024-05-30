@@ -1,0 +1,28 @@
+2024-05-31 02:28:30 - Received form data: {"alumni_email":["dummyemail1@example.comdummyemail2@example.com"]}
+2024-05-31 02:28:30 - Alumni attributes: []
+2024-05-31 02:28:30 - Executed SQL: INSERT INTO gc_alumni () VALUES () with values: []
+2024-05-31 02:28:30 - Inserted alumni ID: 132
+2024-05-31 02:28:30 - Contact data: {"alumni_id":"132","alumni_email":"dummyemail1@example.comdummyemail2@example.com","alumni_number":null,"alumni_address":null,"alumni_notify":null}
+2024-05-31 02:28:30 - Failed to insert data: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'alumni_notify' cannot be null
+2024-05-31 02:31:23 - Received form data: {"alumni_email":"dummyemail2@example.com"}
+2024-05-31 02:31:23 - Alumni attributes: []
+2024-05-31 02:31:23 - Executed SQL: INSERT INTO gc_alumni () VALUES () with values: []
+2024-05-31 02:31:23 - Inserted alumni ID: 133
+2024-05-31 02:31:23 - Contact data: {"alumni_id":"133","alumni_email":"dummyemail2@example.com","alumni_number":null,"alumni_address":null,"alumni_notify":null}
+2024-05-31 02:31:23 - Failed to insert data: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'alumni_notify' cannot be null
+2024-05-31 02:31:23 - Received form data: {"alumni_email":"dummyemail1@example.com"}
+2024-05-31 02:31:23 - Alumni attributes: []
+2024-05-31 02:31:23 - Executed SQL: INSERT INTO gc_alumni () VALUES () with values: []
+2024-05-31 02:31:23 - Inserted alumni ID: 134
+2024-05-31 02:31:23 - Contact data: {"alumni_id":"134","alumni_email":"dummyemail1@example.com","alumni_number":null,"alumni_address":null,"alumni_notify":null}
+2024-05-31 02:31:23 - Failed to insert data: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'alumni_notify' cannot be null
+2024-05-31 02:32:44 - Received form data: {"alumni_email":"dummyemail1@example.com"}
+2024-05-31 02:32:44 - Alumni attributes: []
+2024-05-31 02:32:44 - Failed to insert data: No alumni attributes provided
+2024-05-31 02:32:44 - Received form data: {"alumni_email":"dummyemail2@example.com"}
+2024-05-31 02:32:44 - Alumni attributes: []
+2024-05-31 02:32:44 - Failed to insert data: No alumni attributes provided
+2024-05-31 02:35:01 - Received form data: {"alumni_email":"dummyemail2@example.com"}
+2024-05-31 02:35:01 - Failed to insert data: No alumni attributes provided
+2024-05-31 02:35:01 - Received form data: {"alumni_email":"dummyemail1@example.com"}
+2024-05-31 02:35:01 - Failed to insert data: No alumni attributes provided
