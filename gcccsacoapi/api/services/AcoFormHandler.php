@@ -378,7 +378,8 @@ class FormHandler extends GlobalUtil
             return $this->sendErrorResponse("Failed to delete" . $errmsg, 400);
         }
     }
-    
+
 }
+
 
 ?>
