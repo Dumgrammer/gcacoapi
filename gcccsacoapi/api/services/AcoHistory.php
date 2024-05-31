@@ -55,43 +55,77 @@ class HistoryHandler extends GlobalUtil
         }
         
         public function getEmployedData()
-        {
-            try {
-                $history = 'gc_history';
-                $alumni = 'gc_alumni';
-               
-                $sql = "
-                    SELECT 
-                        alumni.alumni_id,
-                        alumni.alumni_lastname,
-                        alumni.alumni_firstname,
-                        alumni.alumni_middlename
-                    FROM 
-                        $history AS history
-                    JOIN 
-                        $alumni AS alumni
-                    ON 
-                        history.alumni_id = alumni.alumni_id
-                    WHERE 
-                        history.employment_status = 'Employed Full-Time'
-                ";
-                
-                $stmt = $this->pdo->query($sql);
-                
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                $response = [
-                    'status' => 'success',
-                    'data' => $result,
-                    'statusCode' => 200
-                ];
-                
-                return $this->sendResponse($response, 200);
-            } catch (\PDOException $e) {
-                $errmsg = $e->getMessage();
-                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
-            }
-        }
+{
+    try {
+        $history = 'gc_history';
+        $alumni = 'gc_alumni';
+        $contact = 'gc_alumni_contact'; // Add the table name for alumni contact
+        $family = 'gc_alumni_family'; // Add the table name for alumni family
+        $education = 'gc_alumni_education'; // Add the table name for alumni education
+        
+        $sql = "
+            SELECT 
+                alumni.alumni_id,
+                alumni.alumni_lastname,
+                alumni.alumni_firstname,
+                alumni.alumni_middlename,
+                alumni.alumni_birthday,
+                alumni.alumni_age,
+                contact.alumni_address, 
+                contact.alumni_number, 
+                contact.alumni_email,
+                family.alumni_race,
+                family.alumni_religion,
+                family.alumni_spousename,
+                family.alumni_no_of_children,
+                family.alumni_marital_status,
+                education.year_graduated,
+                education.alumni_program,
+                education.education_upgrade,
+                history.employment_status,
+                history.working_in_industry,
+                history.working_in_abroad,
+                history.years_of_experience,
+                history.response_date
+            FROM 
+                $history AS history
+            JOIN 
+                $alumni AS alumni
+            ON 
+                history.alumni_id = alumni.alumni_id
+            JOIN
+                $contact AS contact -- Join alumni contact table
+            ON
+                alumni.alumni_id = contact.alumni_id
+            JOIN
+                $family AS family -- Join alumni family table
+            ON
+                alumni.alumni_id = family.alumni_id
+            JOIN
+                $education AS education -- Join alumni education table
+            ON
+                alumni.alumni_id = education.alumni_id
+            WHERE 
+                history.employment_status = 'Employed Full-Time'
+        ";
+        
+        $stmt = $this->pdo->query($sql);
+        
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $response = [
+            'status' => 'success',
+            'data' => $result,
+            'statusCode' => 200
+        ];
+        
+        return $this->sendResponse($response, 200);
+    } catch (\PDOException $e) {
+        $errmsg = $e->getMessage();
+        return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    }
+}
+
         
 
     public function getParttime()
@@ -119,24 +153,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getPartimeData()
+        public function getPartimeData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Employed Part-Time'
                 ";
@@ -157,6 +224,7 @@ class HistoryHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
+        
         
     public function getUnemployed()
         {
@@ -182,24 +250,57 @@ class HistoryHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
-    public function getUnemployedData()
+        public function getUnemployedData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family'; 
+                $education = 'gc_alumni_education'; 
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact 
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family 
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education 
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Unemployed and not currently looking for work'
                 ";
@@ -219,7 +320,8 @@ class HistoryHandler extends GlobalUtil
                 $errmsg = $e->getMessage();
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
-        }    
+        }
+        
         
     public function selfEmployed()
         {
@@ -246,24 +348,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getSelfEmployedData()
+        public function getSelfEmployedData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family'; 
+                $education = 'gc_alumni_education'; 
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact 
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family 
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education 
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Self Employed'
                 ";
@@ -310,24 +445,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
     
-    public function getlookingData()
+        public function getLookingData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Unemployed and looking for work'
                 ";
@@ -347,7 +515,7 @@ class HistoryHandler extends GlobalUtil
                 $errmsg = $e->getMessage();
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
-        }
+        }        
 
         public function getStudent()
         {
@@ -374,24 +542,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getStudentData()
+        public function getStudentData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Student'
                 ";
@@ -438,24 +639,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getRetiredData()
+        public function getRetiredData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.employment_status = 'Retired'
                 ";
@@ -525,24 +759,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getGlobalData()
+        public function getGlobalData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.working_in_abroad = 'Yes'
                 ";
@@ -563,7 +830,7 @@ class HistoryHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
-
+                
         public function workingLocally()
         {
             try {
@@ -588,24 +855,57 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function getLocalData()
+        public function getLocalData()
         {
             try {
                 $history = 'gc_history';
                 $alumni = 'gc_alumni';
-               
+                $contact = 'gc_alumni_contact';
+                $family = 'gc_alumni_family';
+                $education = 'gc_alumni_education';
+        
                 $sql = "
                     SELECT 
                         alumni.alumni_id,
                         alumni.alumni_lastname,
                         alumni.alumni_firstname,
-                        alumni.alumni_middlename
+                        alumni.alumni_middlename,
+                        alumni.alumni_birthday,
+                        alumni.alumni_age,
+                        contact.alumni_address, 
+                        contact.alumni_number, 
+                        contact.alumni_email,
+                        family.alumni_race,
+                        family.alumni_religion,
+                        family.alumni_spousename,
+                        family.alumni_no_of_children,
+                        family.alumni_marital_status,
+                        education.year_graduated,
+                        education.alumni_program,
+                        education.education_upgrade,
+                        history.employment_status,
+                        history.working_in_industry,
+                        history.working_in_abroad,
+                        history.years_of_experience,
+                        history.response_date
                     FROM 
                         $history AS history
                     JOIN 
                         $alumni AS alumni
                     ON 
                         history.alumni_id = alumni.alumni_id
+                    JOIN
+                        $contact AS contact
+                    ON
+                        alumni.alumni_id = contact.alumni_id
+                    JOIN
+                        $family AS family
+                    ON
+                        alumni.alumni_id = family.alumni_id
+                    JOIN
+                        $education AS education
+                    ON
+                        alumni.alumni_id = education.alumni_id
                     WHERE 
                         history.working_in_abroad = 'No'
                 ";
@@ -652,42 +952,75 @@ class HistoryHandler extends GlobalUtil
         }
 
         public function getIndustryData()
-        {
-            try {
-                $history = 'gc_history';
-                $alumni = 'gc_alumni';
-               
-                $sql = "
-                    SELECT 
-                        alumni.alumni_id,
-                        alumni.alumni_lastname,
-                        alumni.alumni_firstname,
-                        alumni.alumni_middlename
-                    FROM 
-                        $history AS history
-                    JOIN 
-                        $alumni AS alumni
-                    ON 
-                        history.alumni_id = alumni.alumni_id
-                    WHERE 
-                        history.working_in_industry = 'Yes'
-                ";
-                
-                $stmt = $this->pdo->query($sql);
-                
-                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                
-                $response = [
-                    'status' => 'success',
-                    'data' => $result,
-                    'statusCode' => 200
-                ];
-                
-                return $this->sendResponse($response, 200);
-            } catch (\PDOException $e) {
-                $errmsg = $e->getMessage();
-                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
-            }
-        }
+{
+    try {
+        $history = 'gc_history';
+        $alumni = 'gc_alumni';
+        $contact = 'gc_alumni_contact';
+        $family = 'gc_alumni_family';
+        $education = 'gc_alumni_education';
+
+        $sql = "
+            SELECT 
+                alumni.alumni_id,
+                alumni.alumni_lastname,
+                alumni.alumni_firstname,
+                alumni.alumni_middlename,
+                alumni.alumni_birthday,
+                alumni.alumni_age,
+                contact.alumni_address, 
+                contact.alumni_number, 
+                contact.alumni_email,
+                family.alumni_race,
+                family.alumni_religion,
+                family.alumni_spousename,
+                family.alumni_no_of_children,
+                family.alumni_marital_status,
+                education.year_graduated,
+                education.alumni_program,
+                education.education_upgrade,
+                history.employment_status,
+                history.working_in_industry,
+                history.working_in_abroad,
+                history.years_of_experience,
+                history.response_date
+            FROM 
+                $history AS history
+            JOIN 
+                $alumni AS alumni
+            ON 
+                history.alumni_id = alumni.alumni_id
+            JOIN
+                $contact AS contact
+            ON
+                alumni.alumni_id = contact.alumni_id
+            JOIN
+                $family AS family
+            ON
+                alumni.alumni_id = family.alumni_id
+            JOIN
+                $education AS education
+            ON
+                alumni.alumni_id = education.alumni_id
+            WHERE 
+                history.working_in_industry = 'Yes'
+        ";
+        
+        $stmt = $this->pdo->query($sql);
+        
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        $response = [
+            'status' => 'success',
+            'data' => $result,
+            'statusCode' => 200
+        ];
+        
+        return $this->sendResponse($response, 200);
+    } catch (\PDOException $e) {
+        $errmsg = $e->getMessage();
+        return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    }
+}
 }
 ?>
