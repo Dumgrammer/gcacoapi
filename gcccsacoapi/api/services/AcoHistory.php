@@ -1022,5 +1022,56 @@ class HistoryHandler extends GlobalUtil
         return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
     }
 }
+
+public function getVerification()
+    {
+        try {
+            $alumni = 'gc_alumni';
+            $contact = 'gc_alumni_contact';
+            $family = 'gc_alumni_family';
+            $education = 'gc_alumni_education';
+
+            $sql = "
+                SELECT 
+                    alumni.alumni_id,
+                    alumni.alumni_lastname,
+                    alumni.alumni_firstname,
+                    alumni.alumni_middlename,
+                    contact.alumni_email,
+                    education.alumni_program,
+                    education.year_graduated
+
+                FROM 
+                    $alumni AS alumni
+
+                JOIN
+                    $contact AS contact
+                ON
+                    alumni.alumni_id = contact.alumni_id
+                JOIN
+                    $family AS family
+                ON
+                    alumni.alumni_id = family.alumni_id
+                JOIN
+                    $education AS education
+                ON
+                    alumni.alumni_id = education.alumni_id
+                WHERE
+
+                    alumni.isVisible = 2
+                    AND alumni.alumni_lastname IS NOT NULL
+            ";
+            
+            $stmt = $this->pdo->query($sql);
+            
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+        }
+    }
 }
 ?>

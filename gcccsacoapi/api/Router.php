@@ -1,8 +1,8 @@
 <?php
     // //For Debugging
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    // ini_set('display_errors', 1);
+    // ini_set('display_startup_errors', 1);
+    // error_reporting(E_ALL);
 
     // // Debugging function
     // function debug_echo($message) {
@@ -174,6 +174,13 @@
                             echo json_encode($forms->getFormData($request[1]));
                         } else {
                             echo json_encode($forms->getFormData());
+                        }
+                        break;
+                    case  'alumnidata':
+                        if (count($request) > 1) {
+                            echo json_encode($forms->getProfiles($request[1]));
+                        } else {
+                            echo json_encode($forms->getProfiles());
                         }
                         break;
                     case  'pending':
@@ -426,6 +433,13 @@
                             echo json_encode($statistics->getGradrate($request[1]));
                         } else {
                             echo json_encode($statistics->getGradrate());
+                        }
+                        break;
+                    case  'getverification':
+                        if (count($request) > 1) {
+                            echo json_encode($history->getVerification($request[1]));
+                        } else {
+                            echo json_encode($history->getVerification());
                         }
                         break;                              
                     default:

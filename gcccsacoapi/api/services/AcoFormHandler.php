@@ -247,12 +247,23 @@ class FormHandler extends GlobalUtil
             $contactTableName = 'gc_alumni_contact';
             $educationTableName = 'gc_alumni_education';
     
-            $sql = "SELECT a.alumni_id, a.alumni_lastname, a.alumni_firstname, a.alumni_middlename, 
-                           c.alumni_email, e.alumni_program, e.year_graduated
-                    FROM $alumniTable a
-                    INNER JOIN $contactTableName c ON a.alumni_id = c.alumni_id
-                    INNER JOIN $educationTableName e ON a.alumni_id = e.alumni_id
-                    WHERE a.isVisible = 0";
+            $sql = "
+            SELECT 
+            a.alumni_id, 
+            a.alumni_lastname, 
+            a.alumni_firstname, 
+            a.alumni_middlename, 
+            c.alumni_email, 
+            e.alumni_program, 
+            e.year_graduated
+                    
+            FROM $alumniTable a
+            
+            INNER JOIN $contactTableName c ON a.alumni_id = c.alumni_id
+
+            INNER JOIN $educationTableName e ON a.alumni_id = e.alumni_id
+            
+            WHERE a.isVisible = 0";
             
             $stmt = $this->pdo->query($sql);
     
@@ -282,6 +293,56 @@ class FormHandler extends GlobalUtil
         }
     }
 
+    public function getProfiles()
+    {
+        try {
+            $alumni = 'gc_alumni';
+            $contact = 'gc_alumni_contact';
+            $family = 'gc_alumni_family';
+            $education = 'gc_alumni_education';
+
+            $sql = "
+                SELECT 
+                    alumni.alumni_id,
+                    alumni.alumni_lastname,
+                    alumni.alumni_firstname,
+                    alumni.alumni_middlename,
+                    contact.alumni_email,
+                    education.alumni_program,
+                    education.year_graduated
+
+                FROM 
+                    $alumni AS alumni
+
+                JOIN
+                    $contact AS contact
+                ON
+                    alumni.alumni_id = contact.alumni_id
+                JOIN
+                    $family AS family
+                ON
+                    alumni.alumni_id = family.alumni_id
+                JOIN
+                    $education AS education
+                ON
+                    alumni.alumni_id = education.alumni_id
+                WHERE
+
+                    alumni.isVisible = 1
+                    AND alumni.alumni_lastname IS NOT NULL
+            ";
+            
+            $stmt = $this->pdo->query($sql);
+            
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            
+            return $this->sendResponse($result, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+        }
+    }
 
   
     public function getFormCredentials()
