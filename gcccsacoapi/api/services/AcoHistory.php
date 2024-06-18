@@ -143,21 +143,61 @@ class HistoryHandler extends GlobalUtil
 
         
 
+    // public function getParttime()
+    //     {
+    //         try {
+    //             $history = 'gc_history';
+                
+               
+    //             $sql = "SELECT COUNT(*) as parttime_count FROM $history WHERE employment_status = 'Employed Part-Time'";
+                
+    //             $stmt = $this->pdo->query($sql);
+                
+    //             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+    //             $response = [
+    //                 'status' => 'success',
+    //                 'data' => $result,
+    //                 'statusCode' => 200
+    //             ];
+                
+    //             return $this->sendResponse($response, 200);
+    //         } catch (\PDOException $e) {
+    //             $errmsg = $e->getMessage();
+    //             return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    //         }
+    //     }
+
+
     public function getParttime()
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as parttime_count FROM $history WHERE employment_status = 'Employed Part-Time'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as parrtime_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Employed Part-Time'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
@@ -241,21 +281,61 @@ class HistoryHandler extends GlobalUtil
         }
         
         
-    public function getUnemployed()
+    // public function getUnemployed()
+    //     {
+    //         try {
+    //             $history = 'gc_history';
+                
+               
+    //             $sql = "SELECT COUNT(*) as unemployed_count FROM $history WHERE employment_status = 'Unemployed and not currently looking for work'";
+                
+    //             $stmt = $this->pdo->query($sql);
+                
+    //             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+    //             $response = [
+    //                 'status' => 'success',
+    //                 'data' => $result,
+    //                 'statusCode' => 200
+    //             ];
+                
+    //             return $this->sendResponse($response, 200);
+    //         } catch (\PDOException $e) {
+    //             $errmsg = $e->getMessage();
+    //             return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    //         }
+    //     }
+
+
+        public function getUnemployed()
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as unemployed_count FROM $history WHERE employment_status = 'Unemployed and not currently looking for work'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as unemployed_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Unemployed and not currently looking for work'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
@@ -265,6 +345,7 @@ class HistoryHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
+
         public function getUnemployedData()
         {
             try {
@@ -338,21 +419,61 @@ class HistoryHandler extends GlobalUtil
         }
         
         
-    public function selfEmployed()
+    // public function selfEmployed()
+    //     {
+    //         try {
+    //             $history = 'gc_history';
+                
+               
+    //             $sql = "SELECT COUNT(*) as selfemployed_count FROM $history WHERE employment_status = 'Self Employed'";
+                
+    //             $stmt = $this->pdo->query($sql);
+                
+    //             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+    //             $response = [
+    //                 'status' => 'success',
+    //                 'data' => $result,
+    //                 'statusCode' => 200
+    //             ];
+                
+    //             return $this->sendResponse($response, 200);
+    //         } catch (\PDOException $e) {
+    //             $errmsg = $e->getMessage();
+    //             return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    //         }
+    //     }
+
+
+        public function selfEmployed()
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as selfemployed_count FROM $history WHERE employment_status = 'Self Employed'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as selfemployed_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Self Employed'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
@@ -435,31 +556,70 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
-    public function lookingforWork()
-        {
-            try {
-                $history = 'gc_history';
+    // public function lookingforWork()
+    //     {
+    //         try {
+    //             $history = 'gc_history';
                 
                
-                $sql = "SELECT COUNT(*) as looking_count FROM $history WHERE employment_status = 'Unemployed and looking for work'";
+    //             $sql = "SELECT COUNT(*) as looking_count FROM $history WHERE employment_status = 'Unemployed and looking for work'";
                 
-                $stmt = $this->pdo->query($sql);
+    //             $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    //             $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 
-                $response = [
-                    'status' => 'success',
-                    'data' => $result,
-                    'statusCode' => 200
-                ];
+    //             $response = [
+    //                 'status' => 'success',
+    //                 'data' => $result,
+    //                 'statusCode' => 200
+    //             ];
                 
-                return $this->sendResponse($response, 200);
-            } catch (\PDOException $e) {
-                $errmsg = $e->getMessage();
-                return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
-            }
+    //             return $this->sendResponse($response, 200);
+    //         } catch (\PDOException $e) {
+    //             $errmsg = $e->getMessage();
+    //             return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+    //         }
+    //     }
+        
+    public function lookingforWork()
+    {
+        try {
+            $history = 'gc_history';
+            $education = 'gc_alumni_education'; 
+            
+            $sql = "
+                SELECT 
+                    COUNT(*) as looking_count,
+                    education.year_graduated
+                FROM 
+                    $history AS history
+                JOIN
+                    $education AS education
+                ON 
+                    education.alumni_id = history.alumni_id
+                WHERE 
+                    employment_status = 'Unemployed and looking for work'
+                GROUP BY
+                    education.year_graduated
+            ";
+            
+            $stmt = $this->pdo->query($sql);
+            
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            $response = [
+                'status' => 'success',
+                'data' => $results,
+                'statusCode' => 200
+            ];
+            
+            return $this->sendResponse($response, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
         }
-    
+    }
+        
         public function getLookingData()
         {
             try {
@@ -532,21 +692,61 @@ class HistoryHandler extends GlobalUtil
             }
         }        
 
+        // public function getStudent()
+        // {
+        //     try {
+        //         $history = 'gc_history';
+                
+               
+        //         $sql = "SELECT COUNT(*) as student_count FROM $history WHERE employment_status = 'Student'";
+                
+        //         $stmt = $this->pdo->query($sql);
+                
+        //         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+        //         $response = [
+        //             'status' => 'success',
+        //             'data' => $result,
+        //             'statusCode' => 200
+        //         ];
+                
+        //         return $this->sendResponse($response, 200);
+        //     } catch (\PDOException $e) {
+        //         $errmsg = $e->getMessage();
+        //         return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+        //     }
+        // }
+
+
         public function getStudent()
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as student_count FROM $history WHERE employment_status = 'Student'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as student_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Student'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
@@ -629,21 +829,60 @@ class HistoryHandler extends GlobalUtil
             }
         }
 
+        // public function getRetired()
+        // {
+        //     try {
+        //         $history = 'gc_history';
+                
+               
+        //         $sql = "SELECT COUNT(*) as retired_count FROM $history WHERE employment_status = 'Retired'";
+                
+        //         $stmt = $this->pdo->query($sql);
+                
+        //         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+        //         $response = [
+        //             'status' => 'success',
+        //             'data' => $result,
+        //             'statusCode' => 200
+        //         ];
+                
+        //         return $this->sendResponse($response, 200);
+        //     } catch (\PDOException $e) {
+        //         $errmsg = $e->getMessage();
+        //         return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+        //     }
+        // }
+
         public function getRetired()
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as retired_count FROM $history WHERE employment_status = 'Retired'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as retired_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Retired'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
