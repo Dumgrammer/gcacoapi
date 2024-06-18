@@ -20,7 +20,7 @@ class FormHandler extends GlobalUtil
 
     public function submitFormData($formData) {
         $tableAttributeMapping = [
-            'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename', 'alumni_birthday', 'alumni_age'],
+            'gc_alumni' => ['alumni_lastname', 'alumni_firstname', 'alumni_middlename', 'alumni_birthday', 'alumni_age', 'alumni_sex'],
             'gc_alumni_contact' => ['alumni_email', 'alumni_number', 'alumni_address', 'alumni_notify'],
             'gc_alumni_education' => ['year_graduated', 'alumni_program', 'education_upgrade'],
             'gc_alumni_family' => ['alumni_marital_status', 'alumni_no_of_children', 'alumni_spousename', 'alumni_race', 'alumni_religion'],
@@ -308,8 +308,12 @@ class FormHandler extends GlobalUtil
                     alumni.alumni_firstname,
                     alumni.alumni_middlename,
                     contact.alumni_email,
+                    contact.alumni_number,
+                    contact.alumni_address,
+                    contact.alumni_notify,
                     education.alumni_program,
                     education.year_graduated
+                    
 
                 FROM 
                     $alumni AS alumni
@@ -328,8 +332,9 @@ class FormHandler extends GlobalUtil
                     alumni.alumni_id = education.alumni_id
                 WHERE
 
-                    alumni.isVisible = 1
-                    AND alumni.alumni_lastname IS NOT NULL
+                    alumni.alumni_lastname IS NOT NULL
+                    AND
+                    alumni.isVisible = 1 || 2
             ";
             
             $stmt = $this->pdo->query($sql);
@@ -425,7 +430,37 @@ class FormHandler extends GlobalUtil
             return $this->sendErrorResponse("Failed to update visibility: " . $errmsg, 400);
         }
     }
-        
+     
+    public function unSubscribe($recordIds, $isVisible) {
+        $tableName = 'gc_alumni_contact';
+    
+       
+        if (!is_array($recordIds)) {
+            $recordIds = [$recordIds];
+        }
+    
+        $isVisible = is_numeric($isVisible) ? intval($isVisible) : 0;
+    
+        $placeholders = rtrim(str_repeat('?,', count($recordIds)), ',');
+        $sql = "UPDATE $tableName SET alumni_notify = ? WHERE alumni_id IN ($placeholders)";
+    
+        try {
+            $stmt = $this->pdo->prepare($sql);
+    
+            // Combine the visibility value and record IDs into a single array
+            $params = array_merge([$isVisible], $recordIds);
+    
+            $stmt->execute($params);
+    
+            return $this->sendResponse("Visibility updated", 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to update visibility: " . $errmsg, 400);
+        }
+    }
+    
+
+
     public function getAccepted($recordIds, $isVisible) {
         $tableName = 'gc_alumni'; 
     

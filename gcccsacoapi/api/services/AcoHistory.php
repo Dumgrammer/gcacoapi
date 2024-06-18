@@ -33,17 +33,31 @@ class HistoryHandler extends GlobalUtil
         {
             try {
                 $history = 'gc_history';
+                $education = 'gc_alumni_education'; 
                 
-               
-                $sql = "SELECT COUNT(*) as employed_count FROM $history WHERE employment_status = 'Employed Full-Time'";
+                $sql = "
+                    SELECT 
+                        COUNT(*) as employed_count,
+                        education.year_graduated
+                    FROM 
+                        $history AS history
+                    JOIN
+                        $education AS education
+                    ON 
+                        education.alumni_id = history.alumni_id
+                    WHERE 
+                        employment_status = 'Employed Full-Time'
+                    GROUP BY
+                        education.year_graduated
+                ";
                 
                 $stmt = $this->pdo->query($sql);
                 
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 
                 $response = [
                     'status' => 'success',
-                    'data' => $result,
+                    'data' => $results,
                     'statusCode' => 200
                 ];
                 
@@ -53,78 +67,79 @@ class HistoryHandler extends GlobalUtil
                 return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
             }
         }
+
         
         public function getEmployedData()
-{
-    try {
-        $history = 'gc_history';
-        $alumni = 'gc_alumni';
-        $contact = 'gc_alumni_contact'; // Add the table name for alumni contact
-        $family = 'gc_alumni_family'; // Add the table name for alumni family
-        $education = 'gc_alumni_education'; // Add the table name for alumni education
-        
-        $sql = "
-            SELECT 
-                alumni.alumni_id,
-                alumni.alumni_lastname,
-                alumni.alumni_firstname,
-                alumni.alumni_middlename,
-                alumni.alumni_birthday,
-                alumni.alumni_age,
-                contact.alumni_address, 
-                contact.alumni_number, 
-                contact.alumni_email,
-                family.alumni_race,
-                family.alumni_religion,
-                family.alumni_spousename,
-                family.alumni_no_of_children,
-                family.alumni_marital_status,
-                education.year_graduated,
-                education.alumni_program,
-                education.education_upgrade,
-                history.employment_status,
-                history.working_in_industry,
-                history.working_in_abroad,
-                history.years_of_experience,
-                history.response_date
-            FROM 
-                $history AS history
-            JOIN 
-                $alumni AS alumni
-            ON 
-                history.alumni_id = alumni.alumni_id
-            JOIN
-                $contact AS contact -- Join alumni contact table
-            ON
-                alumni.alumni_id = contact.alumni_id
-            JOIN
-                $family AS family -- Join alumni family table
-            ON
-                alumni.alumni_id = family.alumni_id
-            JOIN
-                $education AS education -- Join alumni education table
-            ON
-                alumni.alumni_id = education.alumni_id
-            WHERE 
-                history.employment_status = 'Employed Full-Time'
-        ";
-        
-        $stmt = $this->pdo->query($sql);
-        
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        $response = [
-            'status' => 'success',
-            'data' => $result,
-            'statusCode' => 200
-        ];
-        
-        return $this->sendResponse($response, 200);
-    } catch (\PDOException $e) {
-        $errmsg = $e->getMessage();
-        return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
-    }
-}
+            {
+                try {
+                    $history = 'gc_history';
+                    $alumni = 'gc_alumni';
+                    $contact = 'gc_alumni_contact';
+                    $family = 'gc_alumni_family';
+                    $education = 'gc_alumni_education';
+                    
+                    $sql = "
+                        SELECT 
+                            alumni.alumni_id,
+                            alumni.alumni_lastname,
+                            alumni.alumni_firstname,
+                            alumni.alumni_middlename,
+                            alumni.alumni_birthday,
+                            alumni.alumni_age,
+                            contact.alumni_address, 
+                            contact.alumni_number, 
+                            contact.alumni_email,
+                            family.alumni_race,
+                            family.alumni_religion,
+                            family.alumni_spousename,
+                            family.alumni_no_of_children,
+                            family.alumni_marital_status,
+                            education.year_graduated,
+                            education.alumni_program,
+                            education.education_upgrade,
+                            history.employment_status,
+                            history.working_in_industry,
+                            history.working_in_abroad,
+                            history.years_of_experience,
+                            history.response_date
+                        FROM 
+                            $history AS history
+                        JOIN 
+                            $alumni AS alumni
+                        ON 
+                            history.alumni_id = alumni.alumni_id
+                        JOIN
+                            $contact AS contact -- Join alumni contact table
+                        ON
+                            alumni.alumni_id = contact.alumni_id
+                        JOIN
+                            $family AS family -- Join alumni family table
+                        ON
+                            alumni.alumni_id = family.alumni_id
+                        JOIN
+                            $education AS education -- Join alumni education table
+                        ON
+                            alumni.alumni_id = education.alumni_id
+                        WHERE 
+                            history.employment_status = 'Employed Full-Time'
+                    ";
+                    
+                    $stmt = $this->pdo->query($sql);
+                    
+                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    $response = [
+                        'status' => 'success',
+                        'data' => $result,
+                        'statusCode' => 200
+                    ];
+                    
+                    return $this->sendResponse($response, 200);
+                } catch (\PDOException $e) {
+                    $errmsg = $e->getMessage();
+                    return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+                }
+            }
 
         
 

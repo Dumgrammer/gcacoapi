@@ -452,7 +452,7 @@
                     $data = json_decode(file_get_contents("php://input"));
                     switch ($request[0]) {
                         case 'editvisibility':
-                            // Assuming JSON data is sent in the request body
+                           
                             if (isset($data->recordIds) && isset($data->visibilityValue)) {
                                 $result = $forms->updateVisibility($data->recordIds, $data->visibilityValue);
                                 if ($result['status'] === 'success') {
@@ -468,6 +468,19 @@
                             // Assuming JSON data is sent in the request body
                             if (isset($data->recordIds) && isset($data->visibilityValue)) {
                                 $result = $forms->getAccepted($data->recordIds, $data->visibilityValue);
+                                if ($result['status'] === 'success') {
+                                    echo json_encode($forms->sendResponse("Records visibility updated successfully", 200));
+                                } else {
+                                    echo json_encode($forms->sendErrorResponse("Failed to update records", 400));
+                                }
+                            } else {
+                                echo json_encode($forms->sendErrorResponse("Invalid Request", 400));
+                            }
+                            break;
+                        case 'unsubscribe':
+                           
+                            if (isset($data->recordIds) && isset($data->visibilityValue)) {
+                                $result = $forms->unSubscribe($data->recordIds, $data->visibilityValue);
                                 if ($result['status'] === 'success') {
                                     echo json_encode($forms->sendResponse("Records visibility updated successfully", 200));
                                 } else {
