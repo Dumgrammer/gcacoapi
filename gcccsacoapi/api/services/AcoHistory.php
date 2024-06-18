@@ -98,6 +98,7 @@ class HistoryHandler extends GlobalUtil
                             education.alumni_program,
                             education.education_upgrade,
                             history.employment_status,
+                            history.current_job,
                             history.working_in_industry,
                             history.working_in_abroad,
                             history.years_of_experience,
@@ -237,6 +238,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -375,6 +377,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -513,6 +516,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -649,6 +653,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -786,6 +791,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -922,6 +928,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -994,7 +1001,7 @@ class HistoryHandler extends GlobalUtil
         try {
             $history = 'gc_history';
 
-            $sql = "SELECT COUNT(*) as working_abroad FROM $history WHERE working_in_abroad = 'Yes'";
+            $sql = "SELECT COUNT(*) as working_abroad FROM $history WHERE working_in_abroad != 'Philippines'";
 
             $stmt = $this->pdo->query($sql);
 
@@ -1042,6 +1049,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -1065,7 +1073,7 @@ class HistoryHandler extends GlobalUtil
                     ON
                         alumni.alumni_id = education.alumni_id
                     WHERE 
-                        history.working_in_abroad = 'Yes'
+                        history.working_in_abroad != 'Philippines'
                 ";
 
             $stmt = $this->pdo->query($sql);
@@ -1090,7 +1098,7 @@ class HistoryHandler extends GlobalUtil
         try {
             $history = 'gc_history';
 
-            $sql = "SELECT COUNT(*) as working_local FROM $history WHERE working_in_abroad = 'No'";
+            $sql = "SELECT COUNT(*) as working_local FROM $history WHERE working_in_abroad = 'Philippines'";
 
             $stmt = $this->pdo->query($sql);
 
@@ -1138,6 +1146,7 @@ class HistoryHandler extends GlobalUtil
                         education.alumni_program,
                         education.education_upgrade,
                         history.employment_status,
+                        history.current_job,
                         history.working_in_industry,
                         history.working_in_abroad,
                         history.years_of_experience,
@@ -1161,7 +1170,7 @@ class HistoryHandler extends GlobalUtil
                     ON
                         alumni.alumni_id = education.alumni_id
                     WHERE 
-                        history.working_in_abroad = 'No'
+                        history.working_in_abroad = 'Philippines'
                 ";
 
             $stmt = $this->pdo->query($sql);
@@ -1187,6 +1196,30 @@ class HistoryHandler extends GlobalUtil
             $history = 'gc_history';
 
             $sql = "SELECT COUNT(*) as industry FROM $history WHERE working_in_industry = 'Yes'";
+
+            $stmt = $this->pdo->query($sql);
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $response = [
+                'status' => 'success',
+                'data' => $result,
+                'statusCode' => 200
+            ];
+
+            return $this->sendResponse($response, 200);
+        } catch (\PDOException $e) {
+            $errmsg = $e->getMessage();
+            return $this->sendErrorResponse("Failed to retrieve: " . $errmsg, 400);
+        }
+    }
+
+    public function notworkingITindustry()
+    {
+        try {
+            $history = 'gc_history';
+
+            $sql = "SELECT COUNT(*) as industry FROM $history WHERE working_in_industry = 'No'";
 
             $stmt = $this->pdo->query($sql);
 
@@ -1234,6 +1267,7 @@ class HistoryHandler extends GlobalUtil
                 education.alumni_program,
                 education.education_upgrade,
                 history.employment_status,
+                history.current_job,
                 history.working_in_industry,
                 history.working_in_abroad,
                 history.years_of_experience,

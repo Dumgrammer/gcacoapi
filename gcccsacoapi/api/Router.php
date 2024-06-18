@@ -428,6 +428,13 @@
                             echo json_encode($history->getIndustryData());
                         }
                         break;
+                    case  'notindustry':
+                        if (count($request) > 1) {
+                            echo json_encode($history->notworkingITindustry($request[1]));
+                        } else {
+                            echo json_encode($history->notworkingITindustry());
+                        }
+                        break;
                     case  'gradrate':
                         if (count($request) > 1) {
                             echo json_encode($statistics->getGradrate($request[1]));
